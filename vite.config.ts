@@ -24,7 +24,7 @@ export default defineConfig({
     }),
     AutoImport({
       imports: ['vue', 'vue-router'],
-      dts: path.resolve(pathName, 'components.d.ts'),
+      dts: path.resolve(pathName, 'auto-import.d.ts'),
     }),
   ],
   css: {

@@ -50,10 +50,11 @@ const navList = [
     ],
   },
 ]
+const isLoginShow = ref(true)
 </script>
 
 <template>
-  <Login />
+  <Login v-model:is-show="isLoginShow" />
   <div flex>
     <nav w-220px h-screen border-r-2 border-gray-100>
       <div text-2xl text-center p-4 h-70px>vue音乐</div>

@@ -1,10 +1,6 @@
-import { defineComponent } from "vue"
+import { Component, defineComponent } from "vue"
 
 
-const useLogin = () => {
-  const LoginComponent = defineComponent({
-    setup() {
-      
-    }
-  })
+const useLogin = (loginComponent: Component) => {
+  
 }
