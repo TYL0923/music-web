@@ -16,40 +16,24 @@ const props = defineProps<{
 const emits = defineEmits<{
   (e: 'onBeforLogin', loginForm: LoginForm): void
   (e: 'onLoginSuccess', loginRes: LoginRes): void
-  (e: 'onLoginFail', err: string): void
+  (e: 'onLoginFail', err: string | null): void
   (e: 'onLoginFinish'): void
   (e: 'update:is-show', newValue: boolean): void
 }>()
+
 const loginFormRef = ref<FormInstance | null>(null)
 const loginForm = reactive<LoginForm>({
   account: 'tyl0923',
   password: '123456',
 })
-const onFinish = (values: LoginForm) => {
+const onFinish = async (values: LoginForm) => {
   emits('onBeforLogin', values)
-  const promise: Promise<LoginRes | string> = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (values.account === 'tyl0923' && values.password === '123456') {
-        resolve({
-          account: values.account,
-          cookie: '',
-        })
-      }
-      else {
-        reject(new Error('账号或密码不正确'))
-      }
-    }, 2000)
-  })
-  promise
-    .then((res) => {
-      emits('onLoginSuccess', res as LoginRes)
-    })
-    .catch((err) => {
-      emits('onLoginFail', err)
-    })
-    .finally(() => {
-      emits('onLoginFinish')
-    })
+  const [err, res] = await login(values)
+  if (!err && res)
+    emits('onLoginSuccess', res as LoginRes)
+  else
+    emits('onLoginFail', err)
+  emits('onLoginFinish')
 }
 const onFinishFailed = (error: any) => {
   emits('onLoginFail', error)

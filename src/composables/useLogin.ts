@@ -1,6 +1,25 @@
-import type { Component } from 'vue'
-import { defineComponent } from 'vue'
+import type { Ref } from 'vue'
+import { useStorage } from '@vueuse/core'
 
-const useLogin = (loginComponent: Component) => {
-
+interface LoginState {
+  account: string
+  cookie: string
+  isShow: boolean
 }
+const loginState: Ref<LoginState> = useStorage('login', {
+  isShow: true,
+  account: '123',
+  cookie: '123',
+})
+const useLogin = () => {
+  const toggle = () => {
+    loginState.value.isShow = !loginState.value.isShow
+  }
+  return {
+    ...toRefs(loginState.value),
+    toggle,
+  }
+}
+
+export default useLogin
+

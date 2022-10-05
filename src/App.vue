@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 const navList = [
   {
     label: '在线音乐',
@@ -50,11 +49,19 @@ const navList = [
     ],
   },
 ]
-const isLoginShow = ref(true)
+const { isShow } = useLogin()
+const logFun = (info: string) => {
+  console.log(info)
+}
 </script>
 
 <template>
-  <Login v-model:is-show="isLoginShow" />
+  <Login
+    v-model:is-show="isShow"
+    @on-befor-login="logFun('befor')"
+    @on-login-success="logFun('success')"
+    @on-login-fail="logFun('fail')"
+  />
   <div flex>
     <nav w-220px h-screen border-r-2 border-gray-100>
       <div text-2xl text-center p-4 h-70px>
@@ -108,44 +115,7 @@ const isLoginShow = ref(true)
       </div>
     </nav>
     <div flex-1 flex-col relative>
-      <header
-        h-64px w-full px-4 border-b-1
-        absolute
-        flex items-center
-        border-gray-100 bg-white bg-opacity-80 backdrop-blur-sm
-      >
-        <div flex-1 flex items-center justify-between>
-          <div flex item-center>
-            <a-button type="text" size="small">
-              <template #icon>
-                <Icon icon="ph:caret-left" width="20px" />
-              </template>
-            </a-button>
-            <span mx-4>{{ $route.path }}</span>
-            <a-button type="text" size="small">
-              <template #icon>
-                <Icon icon="ph:caret-right" width="20px" />
-              </template>
-            </a-button>
-          </div>
-          <div w-300px bg-gray-100 h-40px rounded-xl pt-5px>
-            <a-input placeholder="搜索歌曲" :bordered="false">
-              <template #prefix>
-                <Icon icon="ph:magnifying-glass" width="20px" />
-              </template>
-            </a-input>
-          </div>
-        </div>
-        <div w-200px mx-4>
-          <img
-            w-10 h-10 mr-2
-            rounded-full
-            src="https://avatars.githubusercontent.com/u/82720231?v=4"
-            alt=""
-          >
-          <span font-bold>tyl0923</span>
-        </div>
-      </header>
+      <Header />
       <main flex-1 pt-84px px-5 pb-10 h-100vh overflow-y-auto>
         <RouterView />
       </main>
