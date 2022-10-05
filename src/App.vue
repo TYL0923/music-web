@@ -57,79 +57,92 @@ const isLoginShow = ref(true)
   <Login v-model:is-show="isLoginShow" />
   <div flex>
     <nav w-220px h-screen border-r-2 border-gray-100>
-      <div text-2xl text-center p-4 h-70px>vue音乐</div>
+      <div text-2xl text-center p-4 h-70px>
+        vue音乐
+      </div>
       <div overflow-auto style="height: calc(100vh - 70px)">
         <a-menu id="dddddd" mode="inline">
-          <a-menu-item-group :key="group.key" v-for="group in navList">
+          <a-menu-item-group v-for="group in navList" :key="group.key">
             <template #title>
-              <span text-sm>{{ group.label }}</span></template
-            >
-            <a-menu-item :key="item.key" v-for="item in group.childrens">
+              <span text-sm>{{ group.label }}</span>
+            </template>
+            <a-menu-item v-for="item in group.childrens" :key="item.key">
               <span text-sm font-bold> {{ item.label }} </span>
             </a-menu-item>
           </a-menu-item-group>
           <a-sub-menu key="my-song-list">
-            <template #title><span text-sm>我的歌单</span> </template>
-            <a-menu-item key="9">Option 9</a-menu-item>
-            <a-menu-item key="10">Option 10</a-menu-item>
-            <a-menu-item key="11">Option 11</a-menu-item>
-            <a-menu-item key="12">Option 12</a-menu-item>
+            <template #title>
+              <span text-sm>我的歌单</span>
+            </template>
+            <a-menu-item key="9">
+              Option 9
+            </a-menu-item>
+            <a-menu-item key="10">
+              Option 10
+            </a-menu-item>
+            <a-menu-item key="11">
+              Option 11
+            </a-menu-item>
+            <a-menu-item key="12">
+              Option 12
+            </a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="collect-song-list">
-            <template #title><span text-sm>收藏歌单</span> </template>
-            <a-menu-item key="9">Option 9</a-menu-item>
-            <a-menu-item key="10">Option 10</a-menu-item>
-            <a-menu-item key="11">Option 11</a-menu-item>
-            <a-menu-item key="12">Option 12</a-menu-item>
+            <template #title>
+              <span text-sm>收藏歌单</span>
+            </template>
+            <a-menu-item key="9">
+              Option 9
+            </a-menu-item>
+            <a-menu-item key="10">
+              Option 10
+            </a-menu-item>
+            <a-menu-item key="11">
+              Option 11
+            </a-menu-item>
+            <a-menu-item key="12">
+              Option 12
+            </a-menu-item>
           </a-sub-menu>
         </a-menu>
       </div>
     </nav>
     <div flex-1 flex-col relative>
       <header
+        h-64px w-full px-4 border-b-1
         absolute
-        h-64px
-        w-full
-        px-4
-        flex
-        items-center
-        border-b-1
-        border-gray-100
-        bg-white
-        bg-opacity-80
-        backdrop-blur-sm
+        flex items-center
+        border-gray-100 bg-white bg-opacity-80 backdrop-blur-sm
       >
         <div flex-1 flex items-center justify-between>
           <div flex item-center>
             <a-button type="text" size="small">
               <template #icon>
-                <Icon icon="ph:caret-left" width="20px"></Icon>
+                <Icon icon="ph:caret-left" width="20px" />
               </template>
             </a-button>
             <span mx-4>{{ $route.path }}</span>
             <a-button type="text" size="small">
               <template #icon>
-                <Icon icon="ph:caret-right" width="20px"></Icon>
+                <Icon icon="ph:caret-right" width="20px" />
               </template>
             </a-button>
           </div>
           <div w-300px bg-gray-100 h-40px rounded-xl pt-5px>
             <a-input placeholder="搜索歌曲" :bordered="false">
               <template #prefix>
-                <Icon icon="ph:magnifying-glass" width="20px"></Icon>
+                <Icon icon="ph:magnifying-glass" width="20px" />
               </template>
             </a-input>
           </div>
         </div>
         <div w-200px mx-4>
           <img
-            w-10
-            h-10
-            mr-2
+            w-10 h-10 mr-2
             rounded-full
             src="https://avatars.githubusercontent.com/u/82720231?v=4"
             alt=""
-          />
+          >
           <span font-bold>tyl0923</span>
         </div>
       </header>

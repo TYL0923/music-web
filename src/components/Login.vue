@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { FormInstance } from 'ant-design-vue/es'
-type LoginForm = {
+import type { FormInstance } from 'ant-design-vue/es'
+interface LoginForm {
   account: string
   password: string
 }
-type LoginRes = {
+interface LoginRes {
   account: string
   cookie: string
 }
@@ -13,11 +13,6 @@ type LoginRes = {
 const props = defineProps<{
   isShow: boolean
 }>()
-const loginFormRef = ref<FormInstance | null>(null)
-const loginForm = reactive<LoginForm>({
-  account: 'tyl0923',
-  password: '123456',
-})
 const emits = defineEmits<{
   (e: 'onBeforLogin', loginForm: LoginForm): void
   (e: 'onLoginSuccess', loginRes: LoginRes): void
@@ -25,6 +20,11 @@ const emits = defineEmits<{
   (e: 'onLoginFinish'): void
   (e: 'update:is-show', newValue: boolean): void
 }>()
+const loginFormRef = ref<FormInstance | null>(null)
+const loginForm = reactive<LoginForm>({
+  account: 'tyl0923',
+  password: '123456',
+})
 const onFinish = (values: LoginForm) => {
   emits('onBeforLogin', values)
   const promise: Promise<LoginRes | string> = new Promise((resolve, reject) => {
@@ -34,16 +34,17 @@ const onFinish = (values: LoginForm) => {
           account: values.account,
           cookie: '',
         })
-      } else {
-        reject('账号或密码不正确')
+      }
+      else {
+        reject(new Error('账号或密码不正确'))
       }
     }, 2000)
   })
   promise
-    .then(res => {
+    .then((res) => {
       emits('onLoginSuccess', res as LoginRes)
     })
-    .catch(err => {
+    .catch((err) => {
       emits('onLoginFail', err)
     })
     .finally(() => {
@@ -55,49 +56,39 @@ const onFinishFailed = (error: any) => {
 }
 const maskRef = ref<HTMLElement | null>(null)
 const handleLoginClick = (e: MouseEvent) => {
-  if (maskRef.value === (e.target as HTMLElement)) {
+  if (maskRef.value === (e.target as HTMLElement))
     emits('update:is-show', !props.isShow)
-  } else {
-  }
 }
 </script>
+
 <template>
   <div
-    ref="maskRef"
-    fixed
-    z-100
-    w-100vw
-    h-100vh
-    bg-gray-600
-    bg-opacity-30
     v-if="isShow"
+    ref="maskRef"
+    fixed z-100
+    w-100vw h-100vh
+    bg-gray-600 bg-opacity-30
     @click="handleLoginClick($event)"
   >
     <div
-      absolute
-      inset="1/2"
       class="-translate-50%"
-      w-120
-      h-100
-      bg-white
-      rounded-xl
-      px-20
+      absolute inset="1/2"
+      w-120 h-100
+      bg-white rounded-xl px-20
     >
       <img
-        w-30
-        h-30
+        w-30 h-30
         rounded-full
-        absolute
-        left="1/2"
+        absolute left="1/2"
         class="-translate-x-50% -translate-y-30%"
         src="https://avatars.githubusercontent.com/u/82720231?v=4"
-      />
+      >
       <div mt-30>
         <a-form
-          :model="loginForm"
           ref="loginFormRef"
+          :model="loginForm"
           @finish="onFinish"
-          @finishFailed="onFinishFailed"
+          @finish-failed="onFinishFailed"
         >
           <a-form-item
             name="account"
@@ -105,12 +96,12 @@ const handleLoginClick = (e: MouseEvent) => {
           >
             <div border-b-2 border-gray-100>
               <a-input
+                v-model:value="loginForm.account"
                 size="large"
                 :bordered="false"
-                v-model:value="loginForm.account"
               >
                 <template #prefix>
-                  <Icon icon="ph:user" width="26px"></Icon>
+                  <Icon icon="ph:user" width="26px" />
                 </template>
               </a-input>
             </div>
@@ -121,20 +112,20 @@ const handleLoginClick = (e: MouseEvent) => {
           >
             <div border-b-2 border-gray-100>
               <a-input
+                v-model:value="loginForm.password"
                 size="large"
                 type="password"
-                v-model:value="loginForm.password"
                 :bordered="false"
               >
                 <template #prefix>
-                  <Icon icon="ph:lock-simple" width="26px"></Icon>
+                  <Icon icon="ph:lock-simple" width="26px" />
                 </template>
               </a-input>
             </div>
           </a-form-item>
-          <a-button w-full mt-10 size="large" type="primary" html-type="submit"
-            >登录</a-button
-          >
+          <a-button w-full mt-10 size="large" type="primary" html-type="submit">
+            登录
+          </a-button>
         </a-form>
       </div>
     </div>
