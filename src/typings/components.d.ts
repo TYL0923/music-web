@@ -17,7 +17,10 @@ declare module '@vue/runtime-core' {
     ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
     Header: typeof import('./../components/Header.vue')['default']
     Login: typeof import('./../components/Login.vue')['default']
+    Nav: typeof import('./../components/Nav.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SongCard: typeof import('./../components/SongCard.vue')['default']
+    SongListCard: typeof import('./../components/SongListCard.vue')['default']
   }
 }

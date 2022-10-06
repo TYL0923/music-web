@@ -7,8 +7,6 @@ const ai: AxiosInstance = axios.create({
 
 export default ai
 
-export type Return<T = unknown> = Promise<[string | null, T]>
-
 const initInterceptors = () => {
   // ai.interceptors.request.use((config: AxiosRequestConfig) => {
   //   const token = localStorage.getItem('TOKEN')

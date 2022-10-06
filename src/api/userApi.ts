@@ -1,5 +1,4 @@
 import ai from './'
-import type { Return } from './'
 export function login(loginForm: {
   account: string
   password: string
@@ -24,7 +23,7 @@ export function login(loginForm: {
   })
 }
 
-export function getUserDetail(account: string) {
+export function getUserDetail(account: string): Return {
   const url = '/api/user/detail'
   return new Promise((resolve) => {
     ai.get(url, { params: { id: account } })
@@ -36,7 +35,7 @@ export function getUserDetail(account: string) {
       })
   })
 }
-export function getCookie(account: string) {
+export function getCookie(account: string): Return {
   const url = '/api/user/getCookie'
   return new Promise((resolve) => {
     ai.get(url, { params: { id: account } })
