@@ -87,13 +87,12 @@ async function initNewMvs() {
     recommendNewMvs.value = res.data.list
 }
 
-// watchEffect()
-initRecommendSongList()
-watchEffect(initRecommendDaily)
-watchEffect(initRecommendRadio)
-watchEffect(initNewSongs)
-watchEffect(initNewAlbums)
-watchEffect(initNewMvs)
+// watchEffect(initRecommendSongList)
+// watchEffect(initRecommendDaily)
+// watchEffect(initRecommendRadio)
+// watchEffect(initNewSongs)
+// watchEffect(initNewAlbums)
+// watchEffect(initNewMvs)
 </script>
 
 <template>

@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     Login: typeof import('./../components/Login.vue')['default']
     MvCard: typeof import('./../components/MvCard.vue')['default']
     Nav: typeof import('./../components/Nav.vue')['default']
+    Player: typeof import('./../components/Player.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SongCard: typeof import('./../components/SongCard.vue')['default']
