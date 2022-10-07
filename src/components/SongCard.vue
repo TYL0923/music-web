@@ -6,7 +6,7 @@ const props = defineProps<{
 }>()
 const singer = computed(() => {
   return props.data.singer.reduce((pre, cur, idx) => {
-    return idx === 0 ? pre + cur.title.trim() : `${pre} | ${cur.title.trim()}`
+    return idx === 0 ? pre + cur.title?.trim() || cur.name.trim() : `${pre} | ${cur.title?.trim() || cur.name.trim()}`
   }, '')
 })
 function transfromTime(s: number | string) {
