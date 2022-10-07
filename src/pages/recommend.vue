@@ -1,32 +1,99 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { getNewSongs } from '../api/songApi'
+import { getNewAlbums } from '../api/albumApi'
+import { getNewMv } from '../api/mvApi'
 
 const recommendSongList = ref<SongList[]>([])
 const recommendRadio = ref()
 const recommendDaily = ref()
+const recommendNewSongs = ref<Song[]>([])
+const recommendNewAlbums = ref<Album[]>([])
+const recommendNewMvs = ref<Mv[]>([])
+const songLists = computed(() => {
+  return recommendSongList.value.slice(0, 10) || []
+})
+const newSongs = computed(() => {
+  return recommendNewSongs.value.slice(0, 9) || []
+})
+const newAlbums = computed(() => {
+  return recommendNewAlbums.value.slice(0, 10) || []
+})
+const newMvs = computed(() => {
+  return recommendNewMvs.value.slice(0, 10) || []
+})
 
+const songTabKeyArr = {
+  0: '最新',
+  1: '内地',
+  2: '港台',
+  3: '欧美',
+  4: '韩国',
+  5: '日本',
+}
+const mvTabKeyArr = {
+  0: '最新',
+  1: '内地',
+  2: '港台',
+  3: '欧美',
+  4: '韩国',
+  5: '日本',
+}
+const albumTabKeyArr = {
+  1: '内地',
+  2: '港台',
+  3: '欧美',
+  4: '韩国',
+  5: '日本',
+  6: '其他',
+}
+const songActiveTabKey = ref('0')
+const albumActiveTabKey = ref('1')
+const mvActiveTabKey = ref('0')
 // 推荐歌单
 async function initRecommendSongList() {
   const [err, res] = await getRecommendSongList()
   if (!err && res)
-    recommendSongList.value = res.data.list.slice(0, 10)
+    recommendSongList.value = res.data.list
 }
 // 个性电台
 async function initRecommendRadio() {
   const [err, res] = await getRadio()
   if (!err && res)
-    recommendSongList.value = res.data.tracks
+    recommendRadio.value = res.data.tracks
 }
-// 个性电台
+// 每日30首
 async function initRecommendDaily() {
   const [err, res] = await getRecommendDaily()
   if (!err && res)
     recommendDaily.value = res.data
 }
+// 新歌推荐
+async function initNewSongs() {
+  const [err, res] = await getNewSongs(songActiveTabKey.value)
+  if (!err && res)
+    recommendNewSongs.value = res.data.list
+}
+// 新专辑推荐
+async function initNewAlbums() {
+  const [err, res] = await getNewAlbums(albumActiveTabKey.value)
+  if (!err && res)
+    recommendNewAlbums.value = res.data.list
+}
+// 新Mv推荐
+async function initNewMvs() {
+  const [err, res] = await getNewMv(mvActiveTabKey.value)
+  if (!err && res)
+    recommendNewMvs.value = res.data.list
+}
 
+// watchEffect()
 initRecommendSongList()
-initRecommendDaily()
-// initRecommendRadio()
+watchEffect(initRecommendDaily)
+watchEffect(initRecommendRadio)
+watchEffect(initNewSongs)
+watchEffect(initNewAlbums)
+watchEffect(initNewMvs)
 </script>
 
 <template>
@@ -88,10 +155,51 @@ initRecommendDaily()
     <div mb-6>
       <h2>为你推荐</h2>
       <div class="song-list-contailer">
-        <SongListCard v-for="songList in recommendSongList" :key="songList.id" :data="songList" />
+        <SongListCard v-for="songList in songLists" :key="songList.album_pic_mid" :data="songList" />
       </div>
     </div>
-    <div h-1200px />
+    <div mb-10>
+      <h2 mb-0>
+        新歌推荐
+      </h2>
+      <div>
+        <a-tabs v-model:activeKey="songActiveTabKey">
+          <a-tab-pane v-for="tab, key in songTabKeyArr" :key="key" :tab="tab">
+            <div style="display: grid;grid-template-columns: repeat(3,1fr);" gap-6>
+              <SongCard v-for="song in newSongs" :key="song.mid" :data="song" />
+            </div>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+    </div>
+    <div mb-10>
+      <h2 mb-0>
+        新专辑推荐
+      </h2>
+      <div>
+        <a-tabs v-model:activeKey="albumActiveTabKey">
+          <a-tab-pane v-for="tab, key in albumTabKeyArr" :key="key" :tab="tab">
+            <div style="display: grid;grid-template-columns: repeat(5,1fr);" gap-6>
+              <AlbumCard v-for="album in newAlbums" :key="album.mid" :data="album" />
+            </div>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+    </div>
+    <div mb-6>
+      <h2 mb-0>
+        新Mv推荐
+      </h2>
+      <div>
+        <a-tabs v-model:activeKey="mvActiveTabKey">
+          <a-tab-pane v-for="tab, key in mvTabKeyArr" :key="key" :tab="tab">
+            <div style="display: grid;grid-template-columns: repeat(5,1fr);" gap-6>
+              <MvCard v-for="mv in newMvs" :key="mv.mv_id" :data="mv" />
+            </div>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+    </div>
   </div>
 </template>
 
