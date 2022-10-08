@@ -122,11 +122,14 @@ class Player {
     return this.playList.find(songItem => songItem.mid === song.mid)
   }
 }
+// 全局hooks属性
 let playInstance: Player | null = null
+const playListDrawerVisible = ref<boolean>(true)
 export function usePlayer() {
   if (!playInstance)
     playInstance = new Player()
   return {
     player: playInstance,
+    playListDrawerVisible,
   }
 }

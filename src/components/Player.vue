@@ -2,7 +2,7 @@
 import { Icon } from '@iconify/vue'
 import { usePlayer } from '../composables/usePlayer'
 import { getSongPlayUrl } from '../api/songApi'
-const { player } = usePlayer()
+const { player, playListDrawerVisible } = usePlayer()
 const playSong = computed(() => {
   // return player.playSong || {
 
@@ -70,7 +70,9 @@ function handleGetPlayDuration(e: Event) {
       <span>
         02:02/03:03 词
       </span>
-      <Icon icon="ph:list" />
+      <span @click="playListDrawerVisible = !playListDrawerVisible">
+        <Icon icon="ph:list" />
+      </span>
     </div>
   </div>
 </template>

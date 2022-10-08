@@ -94,7 +94,7 @@ async function initNewMvs() {
     recommendNewMvs.value = data.list
 }
 
-watchEffect(initRecommendSongList)
+// watchEffect(initRecommendSongList)
 // watchEffect(initRecommendDaily)
 // watchEffect(initRecommendRadio)
 // watchEffect(initNewSongs)

@@ -25,7 +25,7 @@ const time = computed(() => {
 <template>
   <div flex items-center max-w-100>
     <div
-      :style="{ backgroundImage: `url('${useSongImageUrl(data.album.pmid)}')` }"
+      :style="{ backgroundImage: `url('${useSongImageUrl(data.album?.pmid || '')}')` }"
       w-25 h-25 rounded-1
       relative
       bg-cover bg-center bg-norepact

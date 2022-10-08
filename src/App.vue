@@ -13,6 +13,8 @@ onMounted(() => {
   window.addEventListener('resize', changeFontSize)
   changeFontSize()
 })
+
+const { playListDrawerVisible } = usePlayer()
 </script>
 
 <template>
@@ -23,7 +25,17 @@ onMounted(() => {
       @on-login-success="logFun('success')"
       @on-login-fail="logFun('fail')"
     />
-
+    <a-drawer
+      v-model:visible="playListDrawerVisible"
+      width="280"
+      class="custom-class"
+      title="播放列表"
+      placement="right"
+      :body-style="{ padding: 0 }"
+    >
+      <SongPlayerItem />
+      <SongPlayerItem />
+    </a-drawer>
     <div flex>
       <nav w-220px min-w-220px h-screen border-r-2 border-gray-100>
         <div text-24px text-center p-4 h-70px>
