@@ -1,9 +1,10 @@
-// type Res = {
-//   result: number
-//   errMsg?: string
-//   data?: unknown
-// }
-type Return<T = Record<string, string | number | Arrar<T> | T> | null> = Promise<[string | null, T]>
+type Res = {
+  result: number
+  errMsg?: string
+  data?: any
+  message?: string
+}
+type Return<T = any> = Promise<[string | null | undefined, T]>
 type SongTag = {
   id: number
   name: string

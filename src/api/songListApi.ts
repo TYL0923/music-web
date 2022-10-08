@@ -9,10 +9,7 @@ export function getRecommendSongList(): Return {
   return new Promise((resolve) => {
     ai.get(url)
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }
@@ -26,10 +23,7 @@ export function getSongList(id: string | number): Return {
   return new Promise((resolve) => {
     ai.get(url, { params: { id } })
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }
@@ -42,10 +36,7 @@ export function getRecommendDaily(): Return {
   return new Promise((resolve) => {
     ai.get(url)
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }

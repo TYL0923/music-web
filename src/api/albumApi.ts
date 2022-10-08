@@ -9,10 +9,7 @@ export function getNewAlbums(type = '1', num = 10): Return {
   return new Promise((resolve) => {
     ai.get(url, { params: { type, num } })
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }

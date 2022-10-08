@@ -16,7 +16,7 @@ const props = defineProps<{
 const emits = defineEmits<{
   (e: 'onBeforLogin', loginForm: LoginForm): void
   (e: 'onLoginSuccess', loginRes: LoginRes): void
-  (e: 'onLoginFail', err: string | null): void
+  (e: 'onLoginFail', err: string | null | undefined): void
   (e: 'onLoginFinish'): void
   (e: 'update:is-show', newValue: boolean): void
 }>()
@@ -28,9 +28,9 @@ const loginForm = reactive<LoginForm>({
 })
 const onFinish = async (values: LoginForm) => {
   emits('onBeforLogin', values)
-  const [err, res] = await login(values)
-  if (!err && res)
-    emits('onLoginSuccess', res as LoginRes)
+  const [err, data] = await login(values)
+  if (!err && data)
+    emits('onLoginSuccess', data as LoginRes)
   else
     emits('onLoginFail', err)
   emits('onLoginFinish')

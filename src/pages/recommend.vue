@@ -53,45 +53,45 @@ const mvActiveTabKey = ref('0')
 async function handlePlaySongList(id: number | undefined) {
   if (!id)
     return
-  const [err, res] = await getSongList(id)
-  if (!err && res)
-    player.playList = res.data.songlist
+  const [err, data] = await getSongList(id)
+  if (!err && data)
+    player.playList = data.songlist
 }
 // 推荐歌单
 async function initRecommendSongList() {
-  const [err, res] = await getRecommendSongList()
-  if (!err && res)
-    recommendSongList.value = res.data.list
+  const [err, data] = await getRecommendSongList()
+  if (!err && data)
+    recommendSongList.value = data.list
 }
 // 个性电台
 async function initRecommendRadio() {
-  const [err, res] = await getRadio()
-  if (!err && res)
-    recommendRadio.value = res.data.tracks
+  const [err, data] = await getRadio()
+  if (!err && data)
+    recommendRadio.value = data.tracks
 }
 // 每日30首
 async function initRecommendDaily() {
-  const [err, res] = await getRecommendDaily()
-  if (!err && res)
-    recommendDaily.value = res.data
+  const [err, data] = await getRecommendDaily()
+  if (!err && data)
+    recommendDaily.value = data
 }
 // 新歌推荐
 async function initNewSongs() {
-  const [err, res] = await getNewSongs(songActiveTabKey.value)
-  if (!err && res)
-    recommendNewSongs.value = res.data.list
+  const [err, data] = await getNewSongs(songActiveTabKey.value)
+  if (!err && data)
+    recommendNewSongs.value = data.list
 }
 // 新专辑推荐
 async function initNewAlbums() {
-  const [err, res] = await getNewAlbums(albumActiveTabKey.value)
-  if (!err && res)
-    recommendNewAlbums.value = res.data.list
+  const [err, data] = await getNewAlbums(albumActiveTabKey.value)
+  if (!err && data)
+    recommendNewAlbums.value = data.list
 }
 // 新Mv推荐
 async function initNewMvs() {
-  const [err, res] = await getNewMv(mvActiveTabKey.value)
-  if (!err && res)
-    recommendNewMvs.value = res.data.list
+  const [err, data] = await getNewMv(mvActiveTabKey.value)
+  if (!err && data)
+    recommendNewMvs.value = data.list
 }
 
 watchEffect(initRecommendSongList)

@@ -12,10 +12,10 @@ const audioRef = ref<HTMLAudioElement | null>(null)
 watch(
   () => player.playSong,
   async (song) => {
-    const [err, res] = await getSongPlayUrl(song.songmid!)
+    const [err, data] = await getSongPlayUrl(song.songmid!)
     let url = ''
-    if (!err && res)
-      url = Object.entries(res.data)[0][1] as string
+    if (!err && data)
+      url = Object.entries(data)[0][1] as string
     audioRef.value!.src = url
   },
 )

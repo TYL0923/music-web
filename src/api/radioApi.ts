@@ -9,10 +9,7 @@ export function getRadioCate(): Return {
   return new Promise((resolve) => {
     ai.get(url)
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }
@@ -27,10 +24,7 @@ export function getRadio(id = 99): Return {
   return new Promise((resolve) => {
     ai.get(url, { params: { id } })
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }

@@ -10,10 +10,7 @@ export function login(loginForm: {
       if (loginForm.account === 'tyl0923' && loginForm.password === '123456') {
         ai.post(url, { data }, { headers: { 'Content-Type': 'application/json' } })
           .then((res) => {
-            resolve([null, res])
-          })
-          .catch((err) => {
-            resolve([err, null])
+            resolve([res.errMsg, res.data])
           })
       }
       else {
@@ -28,10 +25,7 @@ export function getUserDetail(account: string): Return {
   return new Promise((resolve) => {
     ai.get(url, { params: { id: account } })
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }
@@ -40,10 +34,7 @@ export function getCookie(account: string): Return {
   return new Promise((resolve) => {
     ai.get(url, { params: { id: account } })
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data || res.message])
       })
   })
 }

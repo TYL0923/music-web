@@ -1,11 +1,9 @@
 <script setup lang="ts">
 const a = async () => {
-  const [err, res] = await getUserDetail('1833290014')
-  // console.log(res)
+  const [err, data] = await getUserDetail('1833290014')
 }
 const b = async () => {
-  const [err, res] = await getCookie('1833290014')
-  // console.log(res)
+  const [err, data] = await getCookie('1833290014')
 }
 </script>
 

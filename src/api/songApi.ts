@@ -9,10 +9,7 @@ export function getSongPlayUrl(id: string): Return {
   return new Promise((resolve) => {
     ai.get(url, { params: { id } })
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }
@@ -25,10 +22,7 @@ export function getNewSongs(type = '0'): Return {
   return new Promise((resolve) => {
     ai.get(url, { params: { type } })
       .then((res) => {
-        resolve([null, res])
-      })
-      .catch((err) => {
-        resolve([err, null])
+        resolve([res.errMsg, res.data])
       })
   })
 }
