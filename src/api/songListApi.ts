@@ -17,7 +17,24 @@ export function getRecommendSongList(): Return {
   })
 }
 /**
- * 获取日推歌单
+ *
+ * @param id 歌单id
+ * @returns
+ */
+export function getSongList(id: string | number): Return {
+  const url = '/api/songlist'
+  return new Promise((resolve) => {
+    ai.get(url, { params: { id } })
+      .then((res) => {
+        resolve([null, res])
+      })
+      .catch((err) => {
+        resolve([err, null])
+      })
+  })
+}
+/**
+ * 获取日推歌曲
  * @returns
  */
 export function getRecommendDaily(): Return {

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { getNewSongs } from '../api/songApi'
-import { getNewAlbums } from '../api/albumApi'
-import { getNewMv } from '../api/mvApi'
-
+import { getSongList } from '../api/songListApi'
+import { usePlayer } from '../composables/usePlayer'
+const { player } = usePlayer()
 const recommendSongList = ref<SongList[]>([])
 const recommendRadio = ref()
 const recommendDaily = ref()
@@ -50,6 +49,14 @@ const albumTabKeyArr = {
 const songActiveTabKey = ref('0')
 const albumActiveTabKey = ref('1')
 const mvActiveTabKey = ref('0')
+
+async function handlePlaySongList(id: number | undefined) {
+  if (!id)
+    return
+  const [err, res] = await getSongList(id)
+  if (!err && res)
+    player.playList = res.data.songlist
+}
 // 推荐歌单
 async function initRecommendSongList() {
   const [err, res] = await getRecommendSongList()
@@ -87,7 +94,7 @@ async function initNewMvs() {
     recommendNewMvs.value = res.data.list
 }
 
-// watchEffect(initRecommendSongList)
+watchEffect(initRecommendSongList)
 // watchEffect(initRecommendDaily)
 // watchEffect(initRecommendRadio)
 // watchEffect(initNewSongs)
@@ -154,7 +161,12 @@ async function initNewMvs() {
     <div mb-6>
       <h2>为你推荐</h2>
       <div class="song-list-contailer">
-        <SongListCard v-for="songList in songLists" :key="songList.album_pic_mid" :data="songList" />
+        <SongListCard
+          v-for="songList in songLists"
+          :key="songList.album_pic_mid"
+          :data="songList"
+          @play="handlePlaySongList(songList.content_id)"
+        />
       </div>
     </div>
     <div mb-10>

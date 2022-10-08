@@ -10,9 +10,12 @@ const props = withDefaults(defineProps<{
   isShowListenNum: true,
   isShowTitle: true,
 })
+const emits = defineEmits<{
+  (e: 'play', id: number | undefined): void
+}>()
 const num = computed(() => {
-  const y = props.data.listen_num / 100000000
-  const w = props.data.listen_num / 10000
+  const y = props.data.listen_num! / 100000000
+  const w = props.data.listen_num! / 10000
   return y >= 1 ? `${y.toFixed(0)} 亿` : `${w.toFixed(0)} 万`
 })
 </script>
@@ -46,7 +49,7 @@ const num = computed(() => {
         hover="opacity-100 bg-opacity-50"
         flex items-center justify-center
       >
-        <span duration-300 text-white hover="text-emerald-500">
+        <span duration-300 text-white hover="text-emerald-500" @click="emits('play', data.content_id)">
           <Icon icon="ph:play-fill" width="3rem" />
         </span>
       </div>

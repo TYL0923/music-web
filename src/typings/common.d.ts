@@ -1,14 +1,40 @@
+// type Res = {
+//   result: number
+//   errMsg?: string
+//   data?: unknown
+// }
 type Return<T = Record<string, string | number | Arrar<T> | T> | null> = Promise<[string | null, T]>
-
+type SongTag = {
+  id: number
+  name: string
+  pid: number
+}
 type SongList = {
-  id: string
+  id?: number
   album_pic_mid: string
-  albumId: string
-  cover: string
-  logo: string
-  title: string
-  listen_num: number
-  userName: string
+  content_id?: number
+  dissname?: string
+  disstid?: string
+  cover?: string
+  creator?: number
+  headurl?: string
+  ifpicurl?: string
+  logo?: string
+  desc?: string
+
+  songids?: string
+  songlist: Song[]
+  title?: string
+  tag?: SongTag[]
+  listen_num?: number
+  visitnum?: number
+  songnum?: number
+  total_song_num?: number
+  userName?: string
+  nick?: string
+  nickname?: string
+  uin?: string
+  encryt_uin?: string
 }
 type Singer = {
   id: number
@@ -19,7 +45,12 @@ type Singer = {
   type?: number
   uin?: number
 }
-type SongFile = Record<string, string | number>
+type SongFile = {
+  'size128': number
+  'size320': number
+  'sizeape': number
+  'sizeflac': number
+}
 type Mv = {
   listennum: number
   mv_id: number
@@ -46,19 +77,26 @@ type Album = {
   singers: Singer[]
 }
 type Song = {
-  id: number
+  id?: number
+  songid?: number
+  songmid?: string
   mid: string
-  album: Album
+  name?: string
+  songname?: string
+  songorig?: string
+  album?: Album
+  albumid?: number
+  albummid?: string
+  albumname?: string
+  interval: number
   file: SongFile
-  mv: {
+  mv?: {
     id: number
     vid: string
     name: string
     title: string
     vt: number
   }
-  name: string
-  title: string
+  title?: string
   singer: Array<Singer>
-  interval: number
 }
