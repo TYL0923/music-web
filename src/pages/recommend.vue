@@ -56,6 +56,7 @@ async function handlePlaySongList(id: number | undefined) {
   const [err, data] = await getSongList(id)
   if (!err && data)
     player.playList = data.songlist
+  // todo init playurl
 }
 // 推荐歌单
 async function initRecommendSongList() {
@@ -94,7 +95,7 @@ async function initNewMvs() {
     recommendNewMvs.value = data.list
 }
 
-// watchEffect(initRecommendSongList)
+watchEffect(initRecommendSongList)
 // watchEffect(initRecommendDaily)
 // watchEffect(initRecommendRadio)
 // watchEffect(initNewSongs)

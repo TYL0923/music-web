@@ -19,6 +19,8 @@ declare global {
   const getRadioCate: typeof import('../api/radioApi')['getRadioCate']
   const getRecommendDaily: typeof import('../api/songListApi')['getRecommendDaily']
   const getRecommendSongList: typeof import('../api/songListApi')['getRecommendSongList']
+  const getSongList: typeof import('../api/songListApi')['getSongList']
+  const getSongPlayUrl: typeof import('../api/songApi')['getSongPlayUrl']
   const getUserDetail: typeof import('../api/userApi')['getUserDetail']
   const h: typeof import('vue')['h']
   const inject: typeof import('vue')['inject']

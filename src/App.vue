@@ -13,8 +13,13 @@ onMounted(() => {
   window.addEventListener('resize', changeFontSize)
   changeFontSize()
 })
-
-const { playListDrawerVisible } = usePlayer()
+const { playListDrawerVisible, player } = usePlayer()
+function handleSongPlay(song: Song) {
+  player.togglePlaySong(song)
+}
+function handleSongPause() {
+  player.pausePlay()
+}
 </script>
 
 <template>
@@ -33,8 +38,13 @@ const { playListDrawerVisible } = usePlayer()
       placement="right"
       :body-style="{ padding: 0 }"
     >
-      <SongPlayerItem />
-      <SongPlayerItem />
+      <SongPlayerItem
+        v-for="song in player.playList"
+        :key="song.songmid"
+        :data="song"
+        @play="handleSongPlay"
+        @pause="handleSongPause"
+      />
     </a-drawer>
     <div flex>
       <nav w-220px min-w-220px h-screen border-r-2 border-gray-100>

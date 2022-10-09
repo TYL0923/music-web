@@ -24,6 +24,7 @@ const initInterceptors = () => {
       //     { duration: 2000 }
       //   )
       // }
+      // console.log(response.data)
       return response.data
     },
   )

@@ -5,42 +5,63 @@ interface PlayState {
   playMode: 'order' | 'random' | 'cycle'
   playSong: Song | null
   playVolume: number
+  isPause: boolean
+  progress: number
+  playTime: number
+  totalTime: number
 }
 const playList = useStorage('play-list', [])
 const playSate: Ref<PlayState> = ref(useStorage('play-state', {
   playMode: 'order',
   playSong: null,
   playVolume: 100,
+  isPause: true,
+  progress: 0,
+  playTime: 0,
+  totalTime: 0,
 }))
-
 function random(min: number, max: number) {
   return Number((Math.random() * (max - min) + min).toFixed(0))
 }
 class Player {
   private _playList: Ref<Song[]>
   private _playSate: Ref<PlayState>
-  constructor() {
+  private _audio: Ref<HTMLAudioElement>
+  constructor(audio: Ref<HTMLAudioElement>) {
     this._playList = ref(playList)
     this._playSate = ref(playSate)
+    this._audio = ref(audio)
   }
 
-  set playSong(song: Song) {
-    this._playSate.value.playSong = reactive(song)
-  }
-
-  get playSong() {
-    return this._playSate.value.playSong!
+  // play set or get
+  set playList(playList: Song[]) {
+    if (playList && playList.length !== 0) {
+      this._playList.value = playList
+      this._playSate.value.playSong = playList[0]
+    }
   }
 
   get playList() {
     return this._playList.value
   }
 
-  set playList(playList: Song[]) {
-    if (playList && playList.length !== 0) {
-      this._playList.value = playList
-      this.playSong = playList[0]
-    }
+  // playState get
+  get playState() {
+    return this._playSate
+  }
+
+  // audio get
+  get audio() {
+    return this._audio
+  }
+
+  // playSate.playSong set or get
+  set playSong(song: Song) {
+    this._playSate.value.playSong = reactive(song)
+  }
+
+  get playSong() {
+    return this._playSate.value.playSong!
   }
 
   get playListLength() {
@@ -55,8 +76,26 @@ class Player {
     return this._playSate.value.playMode
   }
 
+  get isPause() {
+    return this._playSate.value.isPause
+  }
+
+  set isPause(value: boolean) {
+    this._playSate.value.isPause = value
+  }
+
   get playSongIdx() {
     return this._playList.value.findIndex(songItem => songItem.mid === this._playSate.value.playSong?.mid)
+  }
+
+  pausePlay() {
+    this.audio.value.pause()
+    this.isPause = true
+  }
+
+  startPlay() {
+    this.audio.value.play()
+    this.isPause = false
   }
 
   /**
@@ -93,7 +132,10 @@ class Player {
       return
     if (!this.isExist(song))
       this.addPlaySong(song)
-    this.playSong = song
+    if (this.playSong.songmid === song.songmid)
+      this._playSate.value.isPause = false
+    else
+      this.playSong = song
   }
 
   mayLenght(len: number) {
@@ -107,6 +149,13 @@ class Player {
   addPlaySong(song: Song) {
     if (!this.isExist(song))
       this.playList.unshift(song)
+  }
+
+  // 恢复状态
+  restore() {
+    if (this.playSong) {
+      // todo
+    }
   }
 
   /**
@@ -125,9 +174,58 @@ class Player {
 // 全局hooks属性
 let playInstance: Player | null = null
 const playListDrawerVisible = ref<boolean>(true)
+
+function createAudio(): Ref<HTMLAudioElement> {
+  const audio = ref(document.createElement('audio'))
+  audio.value.autoplay = true
+  return audio
+}
+function handleDurationchange() {
+  playInstance!.playState.value.totalTime = playInstance!.audio.value.duration
+}
+function handleTimeupdate() {
+  playInstance!.playState.value.playTime = playInstance!.audio.value.currentTime
+}
+function watchPlaySongChange() {
+  if (playInstance) {
+    watch(
+      () => playInstance!.playSong,
+      async (song) => {
+        const [err, data] = await getSongPlayUrl(song.songmid!)
+        let url = ''
+        if (!err && data)
+          url = Object.entries(data)[0][1] as string
+        playInstance!.audio.value.src = url
+        playInstance!.isPause = false
+        playInstance!.playState.value.playTime = 0
+        playInstance!.playState.value.totalTime = 0
+      },
+    )
+  }
+}
+function watchProgress() {
+  if (playInstance) {
+    watch(
+      [
+        () => playInstance?.playState.value.playTime,
+        () => playInstance?.playState.value.totalTime,
+      ],
+      () => {
+        const progress = playInstance!.playState.value.playTime / playInstance!.playState.value.totalTime * 100
+        playInstance!.playState.value.progress = progress && !Number.isNaN(progress) ? Number(progress.toFixed(2)) : 0
+      },
+    )
+  }
+}
+
 export function usePlayer() {
-  if (!playInstance)
-    playInstance = new Player()
+  if (!playInstance) {
+    playInstance = new Player(createAudio())
+    watchPlaySongChange()
+    watchProgress()
+    playInstance.audio.value.addEventListener('durationchange', handleDurationchange)
+    playInstance.audio.value.addEventListener('timeupdate', handleTimeupdate)
+  }
   return {
     player: playInstance,
     playListDrawerVisible,
