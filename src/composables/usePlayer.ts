@@ -85,17 +85,7 @@ class Player {
   }
 
   get playSongIdx() {
-    return this._playList.value.findIndex(songItem => songItem.mid === this._playSate.value.playSong?.mid)
-  }
-
-  pausePlay() {
-    this.audio.value.pause()
-    this.isPause = true
-  }
-
-  startPlay() {
-    this.audio.value.play()
-    this.isPause = false
+    return this._playList.value.findIndex(songItem => songItem.songmid === this._playSate.value.playSong?.songmid)
   }
 
   /**
@@ -116,10 +106,9 @@ class Player {
 
   playNextSong() {
     let nextSong: Song | undefined
-    if (this.playMode === 'order')
+    if (this.playMode === 'order' || this.playMode === 'cycle')
       nextSong = this.playList.at((this.playSongIdx + 1) % this.playListLength)
-    else
-      nextSong = this.playList.at(random(0, this.playListLength)) // todo 排除当前播放
+    else nextSong = this.playList.at(random(0, this.playListLength))
     this.togglePlaySong(nextSong)
   }
 
@@ -132,10 +121,11 @@ class Player {
       return
     if (!this.isExist(song))
       this.addPlaySong(song)
-    if (this.playSong.songmid === song.songmid)
-      this._playSate.value.isPause = false
-    else
+    if (this.playSong.songmid === song.songmid) { this._playSate.value.isPause = false }
+    else {
       this.playSong = song
+      this.isPause = false
+    }
   }
 
   mayLenght(len: number) {
@@ -152,9 +142,15 @@ class Player {
   }
 
   // 恢复状态
-  restore() {
+  async restore() {
     if (this.playSong) {
-      // todo
+      const [err, data] = await getSongPlayUrl(this.playSong.songmid!)
+      let url = ''
+      if (!err && data)
+        url = Object.entries(data)[0][1] as string
+      this.audio.value.src = url
+      this.audio.value.currentTime = this.playState.value.playTime
+      this.isPause = true
     }
   }
 
@@ -164,7 +160,7 @@ class Player {
    */
   removeSong(song: Song) {
     if (this.isExist(song))
-      this.playList = this.playList.filter(songItem => songItem.mid === song.mid)
+      this.playList = this.playList.filter(songItem => songItem.mid !== song.mid)
   }
 
   isExist(song: Song): Song | undefined {
@@ -173,11 +169,10 @@ class Player {
 }
 // 全局hooks属性
 let playInstance: Player | null = null
-const playListDrawerVisible = ref<boolean>(true)
+const playListDrawerVisible = ref<boolean>(false)
 
 function createAudio(): Ref<HTMLAudioElement> {
   const audio = ref(document.createElement('audio'))
-  audio.value.autoplay = true
   return audio
 }
 function handleDurationchange() {
@@ -186,6 +181,10 @@ function handleDurationchange() {
 function handleTimeupdate() {
   playInstance!.playState.value.playTime = playInstance!.audio.value.currentTime
 }
+function handleEnded() {
+  playInstance!.playNextSong()
+}
+
 function watchPlaySongChange() {
   if (playInstance) {
     watch(
@@ -193,16 +192,33 @@ function watchPlaySongChange() {
       async (song) => {
         const [err, data] = await getSongPlayUrl(song.songmid!)
         let url = ''
-        if (!err && data)
-          url = Object.entries(data)[0][1] as string
-        playInstance!.audio.value.src = url
-        playInstance!.isPause = false
-        playInstance!.playState.value.playTime = 0
-        playInstance!.playState.value.totalTime = 0
+        if (!err && data) {
+          const songItem = Object.entries(data)[0]
+          if (songItem) {
+            url = songItem[1] as string
+            playInstance!.audio.value.autoplay = true
+            playInstance!.audio.value.src = url
+          }
+          else {
+            console.log('需要VIP')
+            playInstance!.playNextSong()
+          }
+        }
       },
     )
   }
 }
+function watchAudioIsPause() {
+  if (playInstance) {
+    watch(
+      () => playInstance!.isPause,
+      (value) => {
+        value ? playInstance!.audio.value.pause() : playInstance!.audio.value.play()
+      },
+    )
+  }
+}
+
 function watchProgress() {
   if (playInstance) {
     watch(
@@ -217,14 +233,31 @@ function watchProgress() {
     )
   }
 }
-
+function watchIsLoop() {
+  if (playInstance) {
+    watch(
+      () => playInstance!.playMode,
+      (value) => {
+        if (value === 'cycle')
+          playInstance!.audio.value.loop = true
+        else playInstance!.audio.value.loop = false
+      },
+      {
+        immediate: true,
+      },
+    )
+  }
+}
 export function usePlayer() {
   if (!playInstance) {
     playInstance = new Player(createAudio())
     watchPlaySongChange()
     watchProgress()
+    watchAudioIsPause()
+    watchIsLoop()
     playInstance.audio.value.addEventListener('durationchange', handleDurationchange)
     playInstance.audio.value.addEventListener('timeupdate', handleTimeupdate)
+    playInstance.audio.value.addEventListener('ended', handleEnded)
   }
   return {
     player: playInstance,

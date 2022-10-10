@@ -3,6 +3,7 @@ const { isShow } = useLogin()
 const logFun = (info: string) => {
   // console.log(info)
 }
+const { playListDrawerVisible, player } = usePlayer()
 onMounted(() => {
   function changeFontSize() {
     const docEl = document.documentElement
@@ -10,15 +11,19 @@ onMounted(() => {
     const rem = width / 90
     docEl.style.fontSize = `${rem}px`
   }
+  function handleUnLoad() {
+    player.restore()
+  }
   window.addEventListener('resize', changeFontSize)
+  window.addEventListener('unload', handleUnLoad)
   changeFontSize()
+  handleUnLoad()
 })
-const { playListDrawerVisible, player } = usePlayer()
 function handleSongPlay(song: Song) {
   player.togglePlaySong(song)
 }
 function handleSongPause() {
-  player.pausePlay()
+  player.isPause = true
 }
 </script>
 

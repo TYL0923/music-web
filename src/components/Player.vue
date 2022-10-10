@@ -25,6 +25,7 @@ function transfromTime(s: number | string) {
   const second = Math.ceil(s % 60).toString()
   return `${minute.padStart(2, '0')}:${second.padStart(2, '0')}`
 }
+const playModeOptions = ['']
 const time = computed(() => {
   return (originTime: number) => transfromTime(originTime)
 })
@@ -56,22 +57,37 @@ const time = computed(() => {
         </span>
       </div>
     </div>
-    <div flex-1 text-2xl px-10 flex items-center gap-x-6 text-gray-900>
-      <Icon icon="ph:arrows-counter-clockwise-light" />
-      <Icon icon="ph:caret-left-fill" />
-      <div w-10 h-10 rounded-full text-white text-xl bg-emerald-500 flex items-center justify-center>
-        <Icon v-if="player.isPause" icon="ph:play-fill" @click="player.startPlay()" />
-        <Icon v-else icon="ph:pause-fill" @click="player.pausePlay()" />
+    <div flex-1 text-xl px-10 flex items-center gap-x-6 text-gray-900>
+      <a-select v-model:value="player.playMode" :bordered="false" :show-arrow="false">
+        <a-select-option value="order">
+          <span>循环</span>
+        </a-select-option>
+        <a-select-option value="random">
+          <span>随机</span>
+        </a-select-option>
+        <a-select-option value="cycle">
+          <span>单曲</span>
+        </a-select-option>
+      </a-select>
+      <!-- <Icon icon="ph:arrows-counter-clockwise-light" text-xl />
+      <Icon icon="ph:arrow-clockwise" text-xl /> -->
+      <Icon icon="ph:caret-left-fill" text-3xl hover="cursor-pointer" />
+      <div w-10 h-10 rounded-full text-white text-xl bg-emerald-500 flex items-center justify-center hover="cursor-pointer">
+        <Icon v-if="player.isPause" icon="ph:play-fill" @click="player.isPause = false" />
+        <Icon v-else icon="ph:pause-fill" @click="player.isPause = true" />
       </div>
-      <Icon icon="ph:caret-right-fill" />
-      <Icon icon="ph:speaker-high" />
+      <Icon icon="ph:caret-right-fill" text-3xl hover="cursor-pointer" @click="player.playNextSong()" />
+      <div w-30 flex items-center>
+        <Icon icon="ph:speaker-high" mr-2 text-xl />
+        <a-progress :percent="100" size="small" stroke-color="#10b981" :show-info="false" />
+      </div>
     </div>
     <div w-50 text-right>
       <span>
         {{ time(player.playState.value.playTime) }} / {{ time(player.playState.value.totalTime) }}
       </span>
       <span ml-2 text-xl @click="playListDrawerVisible = !playListDrawerVisible">
-        <Icon icon="ph:list" />
+        <Icon icon="ph:list" hover="cursor-pointer" />
       </span>
     </div>
   </div>
