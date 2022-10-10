@@ -3,10 +3,6 @@ import { Icon } from '@iconify/vue'
 const props = defineProps<{
   data: Song
 }>()
-const emits = defineEmits<{
-  (e: 'play', song: Song): void
-  (e: 'pause'): void
-}>()
 const { player } = usePlayer()
 const singer = computed(() => {
   return props.data.singer.reduce((pre, cur, idx) => {
@@ -46,8 +42,8 @@ const time = computed(() => {
       gap-x-2 pr-6 text-gray-500
       flex items-center
     >
-      <Icon v-if="!isplay || player.isPause" icon="ph:play" hover="cursor-pointer" @click="emits('play', data)" />
-      <Icon v-else icon="ph:pause" hover="cursor-pointer" @click="emits('pause')" />
+      <Icon v-if="!isplay || player.isPause" icon="ph:play" hover="cursor-pointer" @click="player.togglePlaySong(data)" />
+      <Icon v-else icon="ph:pause" hover="cursor-pointer" @click="player.isPause = true" />
       <Icon icon="ph:heart" hover="cursor-pointer" />
       <Icon icon="ph:dots-three-circle" hover="cursor-pointer" />
     </div>

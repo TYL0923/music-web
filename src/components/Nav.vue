@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
-
+import type { SelectInfo } from 'ant-design-vue/es/menu/src/interface'
+const props = defineProps<{
+  userDetail: UserDetail | undefined
+}>()
+const router = useRouter()
 const navList = [
   {
     label: '在线音乐',
@@ -29,8 +33,8 @@ const navList = [
         key: 'love',
       },
       {
-        label: '本地和下载',
-        key: 'local',
+        label: '已购音乐',
+        key: 'buy',
       },
       {
         label: '最近播放',
@@ -40,21 +44,29 @@ const navList = [
         label: '试听列表',
         key: 'audition',
       },
-      {
-        label: '已购音乐',
-        key: 'buy',
-      },
+
     ],
   },
 ]
 const navState = useStorage('nav', { selectedKeys: [] })
+function handleSelected(item: SelectInfo) {
+  const { key } = item
+  if (key === 'love') {
+    router.push({
+      path: '/songlist',
+      query: {
+        id: props.userDetail!.mymusic.find(songlist => songlist.title === '我喜欢')?.id || '',
+      },
+    })
+  }
+}
 </script>
 
 <template>
   <a-menu
     v-model:selected-keys="navState.selectedKeys"
     mode="inline"
-    @select="({ key }) => $router.push(key as string)"
+    @select="handleSelected"
   >
     <a-menu-item-group v-for="group in navList" :key="group.key">
       <template #title>

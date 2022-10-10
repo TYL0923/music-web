@@ -200,7 +200,7 @@ function watchPlaySongChange() {
             playInstance!.audio.value.src = url
           }
           else {
-            console.log('需要VIP')
+            // 需要vip
             playInstance!.playNextSong()
           }
         }

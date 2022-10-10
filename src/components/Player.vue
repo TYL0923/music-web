@@ -46,7 +46,7 @@ const time = computed(() => {
         bg-cover bg-center bg-norepect
       />
       <div flex-1 ml-2>
-        <p text-sm mb-1>
+        <p text-sm mb-1 line-clamp-1>
           {{ nameAndSinger }}
         </p>
         <span flex items-center text-lg gap-x-2>

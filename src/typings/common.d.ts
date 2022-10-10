@@ -15,7 +15,7 @@ type SongList = {
   album_pic_mid: string
   content_id?: number
   dissname?: string
-  disstid?: string
+  disstid?: string | number
   cover?: string
   creator?: number
   headurl?: string
@@ -100,4 +100,39 @@ type Song = {
   }
   title?: string
   singer: Array<Singer>
+}
+
+type MyMusic = {
+  id: string
+  jumpkey: string
+  jumptype: number
+  jumpurl: string
+  laypic: string
+  music_bykey: {
+    url_key: string
+    url_params: string
+  }
+  num0: number
+  num1: number
+  num2: number
+  picurl: string
+  subtitle: string
+  title: string
+  type: number
+}
+type MyDiss = {
+  jumpurl: string
+  laypic: string
+  list: SongList[]
+  num: number
+  title: string 
+}
+type UserDetail = {
+  creator: any
+  myarticle: any
+  mydiss: MyDiss
+  mymusic: MyMusic[]
+  mymusitype: string
+  myradio: any
+  video: any
 }

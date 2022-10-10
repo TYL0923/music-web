@@ -38,3 +38,4 @@ export function getCookie(account: string): Return {
       })
   })
 }
+

@@ -3,7 +3,9 @@ const { isShow } = useLogin()
 const logFun = (info: string) => {
   // console.log(info)
 }
+const loginState = useLogin()
 const { playListDrawerVisible, player } = usePlayer()
+const userDetail = ref<UserDetail>()
 onMounted(() => {
   function changeFontSize() {
     const docEl = document.documentElement
@@ -19,12 +21,13 @@ onMounted(() => {
   changeFontSize()
   handleUnLoad()
 })
-function handleSongPlay(song: Song) {
-  player.togglePlaySong(song)
+
+async function initUserDetail() {
+  const [err, data] = await getUserDetail(loginState.account.value)
+  if (!err && data)
+    userDetail.value = data
 }
-function handleSongPause() {
-  player.isPause = true
-}
+watchEffect(initUserDetail)
 </script>
 
 <template>
@@ -47,8 +50,6 @@ function handleSongPause() {
         v-for="song in player.playList"
         :key="song.songmid"
         :data="song"
-        @play="handleSongPlay"
-        @pause="handleSongPause"
       />
     </a-drawer>
     <div flex>
@@ -57,7 +58,7 @@ function handleSongPause() {
           vue音乐
         </div>
         <div overflow-auto style="height: calc(100vh - 70px)">
-          <Nav />
+          <Nav :user-detail="userDetail" />
         </div>
       </nav>
       <div flex-1 flex-col relative>
