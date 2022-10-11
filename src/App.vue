@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { geUserCreatetSongList, getUserCollectSongList } from './api/songListApi'
 const { isShow } = useLogin()
 const logFun = (info: string) => {
   // console.log(info)
@@ -6,6 +7,8 @@ const logFun = (info: string) => {
 const loginState = useLogin()
 const { playListDrawerVisible, player } = usePlayer()
 const userDetail = ref<UserDetail>()
+const userCreateSongList = ref<Array<Record<string, string | number>>>([])
+const userCollectSongList = ref<Array<Record<string, string | number>>>([])
 onMounted(() => {
   function changeFontSize() {
     const docEl = document.documentElement
@@ -27,6 +30,22 @@ async function initUserDetail() {
   if (!err && data)
     userDetail.value = data
 }
+async function initUserCreateSongList() {
+  const [err, data] = await geUserCreatetSongList(loginState.account.value)
+  if (!err && data) {
+    // 排除Qzone,我喜欢，本地上传歌单
+    userCreateSongList.value = data.list.filter((item: Record<string, string | number>) => {
+      return ![205, 201, 206].includes(item.dirid as number)
+    })
+  }
+}
+async function initUserCollectSongList() {
+  const [err, data] = await getUserCollectSongList(loginState.account.value)
+  if (!err && data)
+    userCollectSongList.value = data.list
+}
+watchEffect(initUserCreateSongList)
+watchEffect(initUserCollectSongList)
 watchEffect(initUserDetail)
 </script>
 
@@ -58,7 +77,11 @@ watchEffect(initUserDetail)
           vue音乐
         </div>
         <div overflow-auto style="height: calc(100vh - 70px)">
-          <Nav :user-detail="userDetail" />
+          <Nav
+            :user-detail="userDetail"
+            :user-create-song-list="userCreateSongList"
+            :user-collect-song-list="userCollectSongList"
+          />
         </div>
       </nav>
       <div flex-1 flex-col relative>

@@ -20,19 +20,21 @@ const emits = defineEmits<{
   (e: 'onLoginFinish'): void
   (e: 'update:is-show', newValue: boolean): void
 }>()
-
+const loginState = useLogin()
 const loginFormRef = ref<FormInstance | null>(null)
 const loginForm = reactive<LoginForm>({
-  account: 'tyl0923',
+  account: '1833290014',
   password: '123456',
 })
 const onFinish = async (values: LoginForm) => {
   emits('onBeforLogin', values)
   const [err, data] = await login(values)
-  if (!err && data)
+  if (!err && data) {
+    // todo
+    loginState.account.value = '1833290014'
     emits('onLoginSuccess', data as LoginRes)
-  else
-    emits('onLoginFail', err)
+  }
+  else { emits('onLoginFail', err) }
   emits('onLoginFinish')
 }
 const onFinishFailed = (error: any) => {

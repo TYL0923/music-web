@@ -8,7 +8,7 @@ interface LoginState {
 }
 const loginState: Ref<LoginState> = useStorage('login', {
   isShow: true,
-  account: '123',
+  account: '1833290014',
   cookie: '123',
 })
 const useLogin = () => {

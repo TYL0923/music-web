@@ -27,6 +27,33 @@ export function getSongList(id: string | number): Return {
       })
   })
 }
+
+/**
+ * 获取用户创建歌单
+ * @returns
+ */
+export function geUserCreatetSongList(id: string): Return {
+  const url = '/api/user/songlist'
+  return new Promise((resolve) => {
+    ai.get(url, { params: { id } })
+      .then((res) => {
+        resolve([res.errMsg, res.data])
+      })
+  })
+}
+/**
+ * 获取用户收藏歌单
+ * @returns
+ */
+export function getUserCollectSongList(id: string): Return {
+  const url = '/api/user/collect/songlist'
+  return new Promise((resolve) => {
+    ai.get(url, { params: { id } })
+      .then((res) => {
+        resolve([res.errMsg, res.data])
+      })
+  })
+}
 /**
  * 获取日推歌曲
  * @returns

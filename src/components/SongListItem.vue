@@ -16,6 +16,36 @@ const singer = computed(() => {
 const isplay = computed(() => {
   return props.data.songmid === player.playSong.songmid
 })
+const operationOption = [
+  {
+    label: '播放',
+    key: 'play',
+    handle: () => player.togglePlaySong(props.data),
+  },
+  {
+    label: '下一首播放',
+    key: 'nextplay',
+    handle: () => player.addNextPlaySong(props.data),
+  },
+  {
+    label: '播放mv',
+    key: 'playMv',
+  },
+  {
+    label: '',
+    key: '-',
+  },
+  {
+    label: '我喜欢',
+    key: 'love',
+  },
+  {
+    label: '查看评论',
+    key: 'comment',
+  },
+
+]
+
 function handleClick() {
   player.togglePlaySong(props.data)
 }
@@ -46,7 +76,19 @@ const { handleClickFn, handleDoubleClickFn } = useDiffClick(handleClick, handleD
         />
         <Icon v-else icon="ph:pause" hover="cursor-pointer" @click="player.isPause = true" />
         <Icon icon="ph:chat-centered-dots" />
-        <Icon icon="ph:dots-three-circle" />
+        <a-dropdown :trigger="['click']">
+          <Icon icon="ph:dots-three-circle" />
+          <template #overlay>
+            <a-menu style="width: 180px">
+              <template v-for="item in operationOption">
+                <a-menu-item v-if="item.key !== '-'" :key="item.key" @click="item.handle">
+                  <span text-sm text-gray-900>{{ item.label }}</span>
+                </a-menu-item>
+                <a-menu-divider v-else :key="`${item.key}-`" />
+              </template>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </div>
     </div>
     <div style="width: 30%" line-clamp-1 :class="isplay ? 'text-emerald-500' : 'text-gray-900'">

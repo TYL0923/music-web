@@ -3,6 +3,8 @@ import { useStorage } from '@vueuse/core'
 import type { SelectInfo } from 'ant-design-vue/es/menu/src/interface'
 const props = defineProps<{
   userDetail: UserDetail | undefined
+  userCreateSongList: Array<Record<string, string | number>>
+  userCollectSongList: Array<Record<string, string | number>>
 }>()
 const router = useRouter()
 const navList = [
@@ -49,7 +51,7 @@ const navList = [
   },
 ]
 const navState = useStorage('nav', { selectedKeys: [] })
-function handleSelected(item: SelectInfo) {
+function handleGotoPage(item: { label: string; key: string }) {
   const { key } = item
   if (key === 'love') {
     router.push({
@@ -59,6 +61,15 @@ function handleSelected(item: SelectInfo) {
       },
     })
   }
+  else { router.push(key as string) }
+}
+function handleGotoSongList(id: number | string) {
+  router.push({
+    path: '/songlist',
+    query: {
+      id,
+    },
+  })
 }
 </script>
 
@@ -66,13 +77,12 @@ function handleSelected(item: SelectInfo) {
   <a-menu
     v-model:selected-keys="navState.selectedKeys"
     mode="inline"
-    @select="handleSelected"
   >
     <a-menu-item-group v-for="group in navList" :key="group.key">
       <template #title>
         <span text-13px>{{ group.label }}</span>
       </template>
-      <a-menu-item v-for="item in group.childrens" :key="item.key">
+      <a-menu-item v-for="item in group.childrens" :key="item.key" @click="handleGotoPage(item)">
         <span text-14px font-bold> {{ item.label }} </span>
       </a-menu-item>
     </a-menu-item-group>
@@ -80,34 +90,24 @@ function handleSelected(item: SelectInfo) {
       <template #title>
         <span text-14px>我的歌单</span>
       </template>
-      <a-menu-item key="9">
-        Option 9
-      </a-menu-item>
-      <a-menu-item key="10">
-        Option 10
-      </a-menu-item>
-      <a-menu-item key="11">
-        Option 11
-      </a-menu-item>
-      <a-menu-item key="12">
-        Option 12
+      <a-menu-item
+        v-for="songList in userCreateSongList"
+        :key="songList.tid"
+        @click="handleGotoSongList(songList.tid)"
+      >
+        {{ songList.diss_name }}
       </a-menu-item>
     </a-sub-menu>
     <a-sub-menu key="collect-song-list">
       <template #title>
         <span text-14px>收藏歌单</span>
       </template>
-      <a-menu-item key="9">
-        Option 9
-      </a-menu-item>
-      <a-menu-item key="10">
-        Option 10
-      </a-menu-item>
-      <a-menu-item key="11">
-        Option 11
-      </a-menu-item>
-      <a-menu-item key="12">
-        Option 12
+      <a-menu-item
+        v-for="songList in userCollectSongList"
+        :key="songList.dissid"
+        @click="handleGotoSongList(songList.dissid)"
+      >
+        {{ songList.dissname }}
       </a-menu-item>
     </a-sub-menu>
   </a-menu>
