@@ -10,7 +10,7 @@ export function login(loginForm: {
       if (loginForm.account === '1833290014' && loginForm.password === '123456') {
         ai.post(url, { data }, { headers: { 'Content-Type': 'application/json' } })
           .then((res) => {
-            resolve([res.errMsg, res.data])
+            resolve([res.errMsg, res])
           })
       }
       else {
@@ -19,22 +19,26 @@ export function login(loginForm: {
     }, 1500)
   })
 }
-
-export function getUserDetail(account: string): Return {
-  const url = '/api/user/detail'
-  return new Promise((resolve) => {
-    ai.get(url, { params: { id: account } })
-      .then((res) => {
-        resolve([res.errMsg, res.data])
-      })
-  })
-}
+/**
+ * 设置cookie 调用接口会直接将cookie设置到游览器中
+ * @param account 用户账号
+ * @returns
+ */
 export function getCookie(account: string): Return {
   const url = '/api/user/getCookie'
   return new Promise((resolve) => {
     ai.get(url, { params: { id: account } })
       .then((res) => {
         resolve([res.errMsg, res.data || res.message])
+      })
+  })
+}
+export function getUserDetail(account: string): Return {
+  const url = '/api/user/detail'
+  return new Promise((resolve) => {
+    ai.get(url, { params: { id: account } })
+      .then((res) => {
+        resolve([res.errMsg, res.data])
       })
   })
 }

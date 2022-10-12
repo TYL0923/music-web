@@ -6,7 +6,7 @@ const { toggle } = useLogin()
 <template>
   <div
     h-64px w-full px-4 border-b-1
-    absolute z-1000
+    absolute z-100
     flex items-center
     border-gray-100 bg-white bg-opacity-80 backdrop-blur-sm
   >

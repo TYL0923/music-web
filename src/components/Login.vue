@@ -1,26 +1,17 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import type { FormInstance } from 'ant-design-vue/es'
-interface LoginForm {
-  account: string
-  password: string
-}
-interface LoginRes {
-  account: string
-  cookie: string
-}
-
 const props = defineProps<{
   isShow: boolean
 }>()
 const emits = defineEmits<{
   (e: 'onBeforLogin', loginForm: LoginForm): void
-  (e: 'onLoginSuccess', loginRes: LoginRes): void
+  (e: 'onLoginSuccess', account: string): void
   (e: 'onLoginFail', err: string | null | undefined): void
   (e: 'onLoginFinish'): void
   (e: 'update:is-show', newValue: boolean): void
 }>()
-const loginState = useLogin()
+
 const loginFormRef = ref<FormInstance | null>(null)
 const loginForm = reactive<LoginForm>({
   account: '1833290014',
@@ -30,11 +21,17 @@ const onFinish = async (values: LoginForm) => {
   emits('onBeforLogin', values)
   const [err, data] = await login(values)
   if (!err && data) {
-    // todo
-    loginState.account.value = '1833290014'
-    emits('onLoginSuccess', data as LoginRes)
+    if (data.result === 100) {
+      const [e, d] = await getCookie(values.account)
+      if (!e && d)
+        emits('onLoginSuccess', loginForm.account)
+
+      else
+        emits('onLoginFail', '设置cookie失败')
+    }
+    else { emits('onLoginFail', '登录失败') }
   }
-  else { emits('onLoginFail', err) }
+  else { emits('onLoginFail', '登录失败') }
   emits('onLoginFinish')
 }
 const onFinishFailed = (error: any) => {
@@ -51,7 +48,7 @@ const handleLoginClick = (e: MouseEvent) => {
   <div
     v-if="isShow"
     ref="maskRef"
-    fixed z-100
+    fixed z-1000
     w-100vw h-100vh
     bg-gray-600 bg-opacity-30
     @click="handleLoginClick($event)"
@@ -59,7 +56,7 @@ const handleLoginClick = (e: MouseEvent) => {
     <div
       class="-translate-50%"
       absolute inset="1/2"
-      w-120 h-100
+      w-120 h-100 min-w-400px min-h-350px
       bg-white rounded-xl px-20
     >
       <img

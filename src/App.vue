@@ -1,14 +1,12 @@
 <script setup lang="ts">
+import { message } from 'ant-design-vue'
 import { geUserCreatetSongList, getUserCollectSongList } from './api/songListApi'
-const { isShow } = useLogin()
-const logFun = (info: string) => {
-  // console.log(info)
-}
-const loginState = useLogin()
+const { isShow: loginIsShow, account } = useLogin()
 const { playListDrawerVisible, player } = usePlayer()
 const userDetail = ref<UserDetail>()
 const userCreateSongList = ref<Array<Record<string, string | number>>>([])
 const userCollectSongList = ref<Array<Record<string, string | number>>>([])
+
 onMounted(() => {
   function changeFontSize() {
     const docEl = document.documentElement
@@ -26,12 +24,12 @@ onMounted(() => {
 })
 
 async function initUserDetail() {
-  const [err, data] = await getUserDetail(loginState.account.value)
+  const [err, data] = await getUserDetail(account.value)
   if (!err && data)
     userDetail.value = data
 }
 async function initUserCreateSongList() {
-  const [err, data] = await geUserCreatetSongList(loginState.account.value)
+  const [err, data] = await geUserCreatetSongList(account.value)
   if (!err && data) {
     // 排除Qzone,我喜欢，本地上传歌单
     userCreateSongList.value = data.list.filter((item: Record<string, string | number>) => {
@@ -40,9 +38,31 @@ async function initUserCreateSongList() {
   }
 }
 async function initUserCollectSongList() {
-  const [err, data] = await getUserCollectSongList(loginState.account.value)
+  const [err, data] = await getUserCollectSongList(account.value)
   if (!err && data)
     userCollectSongList.value = data.list
+}
+function handleBeforLogin(loginForm: LoginForm) {
+  message.loading({
+    content: `账号${loginForm.account}正在登录中`,
+    key: 'login',
+  })
+}
+function handleLoginSuccess(accountRes: string) {
+  account.value = accountRes
+  message.success({
+    content: `账号${accountRes}登录成功`,
+    key: 'login',
+    duration: 1,
+  })
+  loginIsShow.value = false
+}
+function handleLoginFail(err: string | null | undefined) {
+  message.error({
+    content: `登录失败${err ? (`,${err}`) : ''}`,
+    key: 'login',
+    duration: 1,
+  })
 }
 watchEffect(initUserCreateSongList)
 watchEffect(initUserCollectSongList)
@@ -52,10 +72,10 @@ watchEffect(initUserDetail)
 <template>
   <div>
     <Login
-      v-model:is-show="isShow"
-      @on-befor-login="logFun('befor')"
-      @on-login-success="logFun('success')"
-      @on-login-fail="logFun('fail')"
+      v-model:is-show="loginIsShow"
+      @on-befor-login="handleBeforLogin"
+      @on-login-success="handleLoginSuccess"
+      @on-login-fail="handleLoginFail"
     />
     <a-drawer
       v-model:visible="playListDrawerVisible"

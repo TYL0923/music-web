@@ -5,6 +5,15 @@ type Res = {
   message?: string
 }
 type Return<T = any> = Promise<[string | null | undefined, T]>
+
+interface LoginForm {
+  account: string
+  password: string
+}
+interface LoginRes {
+  account: string
+  cookie: string
+}
 type SongTag = {
   id: number
   name: string
