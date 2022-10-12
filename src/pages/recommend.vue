@@ -55,7 +55,7 @@ async function handlePlaySongList(id: number | undefined) {
     return
   const [err, data] = await getSongList(id)
   if (!err && data)
-    player.playList = data.songlist
+    player.playAll(data.songlist)
   // todo init playurl
 }
 // 推荐歌单

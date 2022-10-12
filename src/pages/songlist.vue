@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { message } from 'ant-design-vue'
+import { removeSongById } from '../api/songListApi'
 const route = useRoute()
 const songListDetail = ref<SongList>()
 const { player } = usePlayer()
@@ -26,6 +28,24 @@ async function initSongList() {
   if (!err && data)
     songListDetail.value = data
 }
+async function removeSong(id: string) {
+  const [err, data] = await removeSongById(id, songListDetail.value!.dirid!)
+  if (!err && data) {
+    message.success({
+      key: 'removeSong',
+      content: '删除成功',
+      duration: 1,
+    })
+    initSongList()
+  }
+  else {
+    message.error({
+      key: 'removeSong',
+      content: '删除失败',
+      duration: 1,
+    })
+  }
+}
 watchEffect(initSongList)
 </script>
 
@@ -43,7 +63,7 @@ watchEffect(initSongList)
           <p>{{ songListDetail?.desc || '完善歌单信息有机会获得推荐' }}</p>
         </div>
         <div flex itema-center gap-x-4>
-          <a-button type="primary" @click="player.playList = songListDetail!.songlist || []">
+          <a-button type="primary" @click="player.playAll(songListDetail!.songlist)">
             播放全部
           </a-button>
           <a-button>
@@ -69,6 +89,7 @@ watchEffect(initSongList)
             </div>
             <SongListItem
               v-for="song in songList" :key="song.songmid" :data="song"
+              @remove-song="removeSong"
             />
           </div>
         </a-tab-pane>

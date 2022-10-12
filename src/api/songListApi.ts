@@ -14,7 +14,7 @@ export function getRecommendSongList(): Return {
   })
 }
 /**
- *
+ * 获取歌单详情
  * @param id 歌单id
  * @returns
  */
@@ -51,6 +51,21 @@ export function getUserCollectSongList(id: string): Return {
     ai.get(url, { params: { id } })
       .then((res) => {
         resolve([res.errMsg, res.data])
+      })
+  })
+}
+/**
+ * 移除歌单歌曲
+ * @param id 歌曲id
+ * @param dirid 歌单dirid
+ * @returns
+ */
+export function removeSongById(id: string, dirid: number): Return {
+  const url = '/api/songlist/remove'
+  return new Promise((resolve) => {
+    ai.get(url, { params: { id, dirid } })
+      .then((res) => {
+        resolve([res.errMsg, res.data || res.message])
       })
   })
 }

@@ -35,10 +35,8 @@ class Player {
 
   // play set or get
   set playList(playList: Song[]) {
-    if (playList && playList.length !== 0) {
+    if (playList && playList.length !== 0)
       this._playList.value = playList
-      this._playSate.value.playSong = playList[0]
-    }
   }
 
   get playList() {
@@ -88,20 +86,28 @@ class Player {
     return this._playList.value.findIndex(songItem => songItem.songmid === this._playSate.value.playSong?.songmid)
   }
 
+  playAll(playList: Song[]) {
+    if (playList && playList.length !== 0)
+      this._playList.value = playList
+    this._playSate.value.playSong = playList[0]
+  }
+
   /**
    * 添加下一首播放
    * @param song
    */
   addNextPlaySong(song: Song) {
-    let curPlayIdx = this.playList.findIndex(songItem => songItem.mid === this.playSong.mid)
+    if (this.playSong.songmid === song.songmid)
+      return
     if (this.isExist(song))
       this.removeSong(song)
-    if (curPlayIdx === -1)
-      curPlayIdx = 0
-    this.playList
-      = this.playList.slice(0, curPlayIdx + 1)
-        .concat(song)
-        .concat(this.playList.slice(this.mayLenght(curPlayIdx + 2)))
+    const curPlayIdx = this.playList.findIndex(songItem => songItem.songmid === this.playSong.songmid)
+    // console.log(curPlayIdx)
+    // console.log(this.mayLenght(curPlayIdx + 2))
+    const beforList = this.playList.slice(0, curPlayIdx + 1)
+    const curList = [song]
+    const afterList = this.playList.slice(this.mayLenght(curPlayIdx + 1))
+    this.playList = ([] as Song[]).concat(beforList).concat(curList).concat(afterList)
   }
 
   playNextSong() {
@@ -159,12 +165,11 @@ class Player {
    * @param song
    */
   removeSong(song: Song) {
-    if (this.isExist(song))
-      this.playList = this.playList.filter(songItem => songItem.mid !== song.mid)
+    this.playList = this.playList.filter(songItem => songItem.songmid !== song.songmid)
   }
 
   isExist(song: Song): Song | undefined {
-    return this.playList.find(songItem => songItem.mid === song.mid)
+    return this.playList.find(songItem => songItem.songmid === song.songmid)
   }
 }
 // 全局hooks属性

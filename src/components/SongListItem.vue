@@ -6,6 +6,7 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   (e: 'playList'): void
+  (e: 'removeSong', id: string): void
 }>()
 const { player } = usePlayer()
 const singer = computed(() => {
@@ -38,6 +39,17 @@ const operationOption = [
   {
     label: '我喜欢',
     key: 'love',
+  },
+  {
+    label: '删除',
+    key: 'remove',
+    handle: () => {
+      // console.log(props.data)
+      if (props.data.songmid === player.playSong.songmid)
+        player.playNextSong()
+      player.removeSong(props.data)
+      emits('removeSong', props.data.songid!.toString())
+    },
   },
   {
     label: '查看评论',

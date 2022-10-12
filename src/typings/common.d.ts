@@ -25,6 +25,7 @@ type SongList = {
   album_pic_mid: string
   content_id?: number
   dissname?: string
+  dirid?: number
   disstid?: string | number
   cover?: string
   creator?: number
@@ -32,7 +33,6 @@ type SongList = {
   ifpicurl?: string
   logo?: string
   desc?: string
-
   songids?: string
   songlist: Song[]
   title?: string
