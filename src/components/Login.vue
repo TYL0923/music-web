@@ -11,11 +11,12 @@ const emits = defineEmits<{
   (e: 'onLoginFinish'): void
   (e: 'update:is-show', newValue: boolean): void
 }>()
-
+const { isLocal: loginIsLocal } = useLogin()
 const loginFormRef = ref<FormInstance | null>(null)
 const loginForm = reactive<LoginForm>({
   account: '1833290014',
   password: '123456',
+  isLocal: false,
 })
 const onFinish = async (values: LoginForm) => {
   emits('onBeforLogin', values)
@@ -23,11 +24,13 @@ const onFinish = async (values: LoginForm) => {
   if (!err && data) {
     if (data.result === 100) {
       const [e, d] = await getCookie(values.account)
-      if (!e && d)
+      if (!e && d) {
         emits('onLoginSuccess', loginForm.account)
-
-      else
-        emits('onLoginFail', '设置cookie失败')
+        if (loginForm.isLocal)
+          loginLocal()
+        else loginIsLocal.value = false
+      }
+      else { emits('onLoginFail', '设置cookie失败') }
     }
     else { emits('onLoginFail', '登录失败') }
   }
@@ -41,6 +44,9 @@ const maskRef = ref<HTMLElement | null>(null)
 const handleLoginClick = (e: MouseEvent) => {
   if (maskRef.value === (e.target as HTMLElement))
     emits('update:is-show', !props.isShow)
+}
+function loginLocal() {
+  loginIsLocal.value = true
 }
 </script>
 
@@ -106,9 +112,14 @@ const handleLoginClick = (e: MouseEvent) => {
               </a-input>
             </div>
           </a-form-item>
-          <a-button w-full mt-10 size="large" type="primary" html-type="submit">
-            登录
-          </a-button>
+          <div mt-10>
+            <a-checkbox v-model:checked="loginForm.isLocal">
+              记住我
+            </a-checkbox>
+            <a-button mt-1 w-full size="large" type="primary" html-type="submit">
+              登录
+            </a-button>
+          </div>
         </a-form>
       </div>
     </div>

@@ -3,13 +3,13 @@ import { useStorage } from '@vueuse/core'
 
 interface LoginState {
   account: string
-  cookie: string
   isShow: boolean
+  isLocal: boolean
 }
 const loginState: Ref<LoginState> = useStorage('login', {
   isShow: true,
-  account: '1833290014',
-  cookie: '123',
+  account: '',
+  isLocal: false,
 })
 const useLogin = () => {
   const toggle = () => {

@@ -1,6 +1,22 @@
 <script setup lang="ts">
+import { Modal } from 'ant-design-vue'
 import { Icon } from '@iconify/vue'
 const { toggle } = useLogin()
+const { account, isLocal } = useLogin()
+function logout() {
+  Modal.confirm({
+    title: '是否退出登录',
+    okText: '确定',
+    okType: 'primary',
+    cancelText: '取消',
+    onOk() {
+      account.value = ''
+      isLocal.value = false
+    },
+    onCancel() {
+    },
+  })
+}
 </script>
 
 <template>
@@ -35,13 +51,23 @@ const { toggle } = useLogin()
     <div
       w-200px mx-4 hover:cursor-pointer
     >
-      <img
-        w-10 h-10 mr-2
-        rounded-full
-        src="https://avatars.githubusercontent.com/u/82720231?v=4"
-        alt=""
-      >
-      <span font-bold @click="toggle">tyl0923</span>
+      <template v-if="account">
+        <div flex items-center>
+          <img
+            w-10 h-10 mr-2
+            rounded-full
+            src="https://avatars.githubusercontent.com/u/82720231?v=4"
+            alt=""
+          >
+          <span font-bold>{{ account }}</span>
+          <Icon ml-4 text-gray-500 text-3xl icon="ph:user" @click="logout" />
+        </div>
+      </template>
+      <template v-else>
+        <a-button type="text" @click="toggle">
+          登录
+        </a-button>
+      </template>
     </div>
   </div>
 </template>

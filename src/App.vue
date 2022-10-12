@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { message } from 'ant-design-vue'
 import { geUserCreatetSongList, getUserCollectSongList } from './api/songListApi'
-const { isShow: loginIsShow, account } = useLogin()
+import { refresh } from './api/userApi'
+const { isShow: loginIsShow, account, isLocal: loginIsLocal } = useLogin()
 const { playListDrawerVisible, player } = usePlayer()
 const userDetail = ref<UserDetail>()
 const userCreateSongList = ref<Array<Record<string, string | number>>>([])
@@ -17,10 +18,15 @@ onMounted(() => {
   function handleUnLoad() {
     player.restore()
   }
+  async function loginRefresh() {
+    const [err, data] = await refresh()
+  }
   window.addEventListener('resize', changeFontSize)
   window.addEventListener('unload', handleUnLoad)
   changeFontSize()
   handleUnLoad()
+  if (loginIsLocal.value && account)
+    loginRefresh()
 })
 
 async function initUserDetail() {

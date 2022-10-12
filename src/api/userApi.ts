@@ -33,6 +33,19 @@ export function getCookie(account: string): Return {
       })
   })
 }
+/**
+ * 刷新登录 更新cookie
+ * @returns
+ */
+export function refresh(): Return {
+  const url = '/api/user/refresh'
+  return new Promise((resolve) => {
+    ai.get(url)
+      .then((res) => {
+        resolve([res.errMsg, res.data || res.message])
+      })
+  })
+}
 export function getUserDetail(account: string): Return {
   const url = '/api/user/detail'
   return new Promise((resolve) => {

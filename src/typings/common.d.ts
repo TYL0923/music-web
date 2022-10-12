@@ -9,6 +9,7 @@ type Return<T = any> = Promise<[string | null | undefined, T]>
 interface LoginForm {
   account: string
   password: string
+  isLocal: boolean
 }
 interface LoginRes {
   account: string
