@@ -40,6 +40,7 @@ async function initUserCreateSongList() {
     songList.value = []
     // 排除Qzone,我喜欢，本地上传歌单
     userCreateSongList.value = data.list.filter((item: Record<string, string | number>) => {
+      // 全局化可添加歌曲歌单
       if (![205, 206].includes(item.dirid as number)) {
         songList.value.push({
           label: item.diss_name,

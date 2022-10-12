@@ -3,6 +3,14 @@ import { Icon } from '@iconify/vue'
 import { getSongList } from '../api/songListApi'
 import { usePlayer } from '../composables/usePlayer'
 const { player } = usePlayer()
+const isLoading = ref<Record<string, boolean>>({
+  radio: true,
+  daily: true,
+  songList: true,
+  songs: true,
+  album: true,
+  mv: true,
+})
 const recommendSongList = ref<SongList[]>([])
 const recommendRadio = ref()
 const recommendDaily = ref()
@@ -49,7 +57,7 @@ const albumTabKeyArr = {
 const songActiveTabKey = ref('0')
 const albumActiveTabKey = ref('1')
 const mvActiveTabKey = ref('0')
-
+// 播放歌单
 async function handlePlaySongList(id: number | undefined) {
   if (!id)
     return
@@ -60,47 +68,59 @@ async function handlePlaySongList(id: number | undefined) {
 }
 // 推荐歌单
 async function initRecommendSongList() {
+  isLoading.value.songList = true
   const [err, data] = await getRecommendSongList()
   if (!err && data)
     recommendSongList.value = data.list
+  isLoading.value.songList = false
 }
 // 个性电台
 async function initRecommendRadio() {
+  isLoading.value.radio = true
   const [err, data] = await getRadio()
   if (!err && data)
     recommendRadio.value = data.tracks
+  isLoading.value.radio = false
 }
 // 每日30首
 async function initRecommendDaily() {
+  isLoading.value.daily = true
   const [err, data] = await getRecommendDaily()
   if (!err && data)
     recommendDaily.value = data
+  isLoading.value.daily = false
 }
 // 新歌推荐
 async function initNewSongs() {
+  isLoading.value.songs = true
   const [err, data] = await getNewSongs(songActiveTabKey.value)
   if (!err && data)
     recommendNewSongs.value = data.list
+  isLoading.value.songs = false
 }
 // 新专辑推荐
 async function initNewAlbums() {
+  isLoading.value.album = true
   const [err, data] = await getNewAlbums(albumActiveTabKey.value)
   if (!err && data)
     recommendNewAlbums.value = data.list
+  isLoading.value.album = false
 }
 // 新Mv推荐
 async function initNewMvs() {
+  isLoading.value.mv = true
   const [err, data] = await getNewMv(mvActiveTabKey.value)
   if (!err && data)
     recommendNewMvs.value = data.list
+  isLoading.value.mv = false
 }
 
-// watchEffect(initRecommendSongList)
-// watchEffect(initRecommendDaily)
-// watchEffect(initRecommendRadio)
-// watchEffect(initNewSongs)
-// watchEffect(initNewAlbums)
-// watchEffect(initNewMvs)
+watchEffect(initRecommendSongList)
+watchEffect(initRecommendDaily)
+watchEffect(initRecommendRadio)
+watchEffect(initNewSongs)
+watchEffect(initNewAlbums)
+watchEffect(initNewMvs)
 </script>
 
 <template>
@@ -109,7 +129,9 @@ async function initNewMvs() {
     <div mb-6>
       <h2>今日推荐</h2>
       <div class="header">
+        <Skeleton v-if="isLoading.radio" :w="90" :h="40" />
         <div
+          v-else
           w-90 h-40 rounded-2 p-4
           bg-slate-500 bg-opacity-50 duration="300"
           hover="-translate-y-10px cursor-pointer"
@@ -130,7 +152,8 @@ async function initNewMvs() {
             </span>
           </div>
         </div>
-        <div>
+        <Skeleton v-if="isLoading.daily" :w="40" :h="40" />
+        <div v-else>
           <div
             :style="{ backgroundImage: `url(${recommendDaily?.logo || ''})` }"
             class="daily"
@@ -162,12 +185,17 @@ async function initNewMvs() {
     <div mb-6>
       <h2>为你推荐</h2>
       <div class="song-list-contailer">
-        <SongListCard
-          v-for="songList in songLists"
-          :key="songList.album_pic_mid"
-          :data="songList"
-          @play="handlePlaySongList(songList.content_id)"
-        />
+        <template v-if="isLoading.songList">
+          <Skeleton v-for="i in 10" :key="i" type="songListCard" />
+        </template>
+        <template v-else>
+          <SongListCard
+            v-for="songList in songLists"
+            :key="songList.album_pic_mid"
+            :data="songList"
+            @play="handlePlaySongList(songList.content_id)"
+          />
+        </template>
       </div>
     </div>
     <div mb-10>
@@ -178,7 +206,12 @@ async function initNewMvs() {
         <a-tabs v-model:activeKey="songActiveTabKey">
           <a-tab-pane v-for="tab, key in songTabKeyArr" :key="key" :tab="tab">
             <div style="display: grid;grid-template-columns: repeat(3,1fr);" gap-6>
-              <SongCard v-for="song in newSongs" :key="song.mid" :data="song" />
+              <template v-if="isLoading.songs">
+                <Skeleton v-for="i in 9" :key="i" type="songCard" />
+              </template>
+              <template v-else>
+                <SongCard v-for="song in newSongs" :key="song.mid" :data="song" />
+              </template>
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -192,7 +225,12 @@ async function initNewMvs() {
         <a-tabs v-model:activeKey="albumActiveTabKey">
           <a-tab-pane v-for="tab, key in albumTabKeyArr" :key="key" :tab="tab">
             <div style="display: grid;grid-template-columns: repeat(5,1fr);" gap-6>
-              <AlbumCard v-for="album in newAlbums" :key="album.mid" :data="album" />
+              <template v-if="isLoading.album">
+                <Skeleton v-for="i in 10" :key="i" type="albumCard" />
+              </template>
+              <template v-else>
+                <AlbumCard v-for="album in newAlbums" :key="album.mid" :data="album" />
+              </template>
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -206,12 +244,18 @@ async function initNewMvs() {
         <a-tabs v-model:activeKey="mvActiveTabKey">
           <a-tab-pane v-for="tab, key in mvTabKeyArr" :key="key" :tab="tab">
             <div style="display: grid;grid-template-columns: repeat(5,1fr);" gap-6>
-              <MvCard v-for="mv in newMvs" :key="mv.mv_id" :data="mv" />
+              <template v-if="isLoading.mv">
+                <Skeleton v-for="i in 10" :key="i" type="mvCard" />
+              </template>
+              <template v-else>
+                <MvCard v-for="mv in newMvs" :key="mv.mv_id" :data="mv" />
+              </template>
             </div>
           </a-tab-pane>
         </a-tabs>
       </div>
     </div>
+    <div h-10 />
   </div>
 </template>
 

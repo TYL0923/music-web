@@ -14,15 +14,17 @@ export function getSongPlayUrl(id: string): Return {
   })
 }
 /**
- * 获取推荐歌单
+ * 获取推荐歌曲
  * @returns
  */
 export function getNewSongs(type = '0'): Return {
   const url = '/api/new/songs'
   return new Promise((resolve) => {
-    ai.get(url, { params: { type } })
-      .then((res) => {
-        resolve([res.errMsg, res.data])
-      })
+    setTimeout(() => {
+      ai.get(url, { params: { type } })
+        .then((res) => {
+          resolve([res.errMsg, res.data])
+        })
+    }, 350)
   })
 }

@@ -7,9 +7,11 @@ import ai from './'
 export function getNewMv(type = '0'): Return {
   const url = '/api/new/mv'
   return new Promise((resolve) => {
-    ai.get(url, { params: { type } })
-      .then((res) => {
-        resolve([res.errMsg, res.data])
-      })
+    setTimeout(() => {
+      ai.get(url, { params: { type } })
+        .then((res) => {
+          resolve([res.errMsg, res.data])
+        })
+    }, 350)
   })
 }

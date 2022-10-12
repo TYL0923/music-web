@@ -22,9 +22,11 @@ export function getRadioCate(): Return {
 export function getRadio(id = 99): Return {
   const url = '/api/radio'
   return new Promise((resolve) => {
-    ai.get(url, { params: { id } })
-      .then((res) => {
-        resolve([res.errMsg, res.data])
-      })
+    setTimeout(() => {
+      ai.get(url, { params: { id } })
+        .then((res) => {
+          resolve([res.errMsg, res.data])
+        })
+    }, 350)
   })
 }

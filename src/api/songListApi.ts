@@ -7,10 +7,12 @@ import ai from './'
 export function getRecommendSongList(): Return {
   const url = '/api/recommend/playlist/u'
   return new Promise((resolve) => {
-    ai.get(url)
-      .then((res) => {
-        resolve([res.errMsg, res.data])
-      })
+    setTimeout(() => {
+      ai.get(url)
+        .then((res) => {
+          resolve([res.errMsg, res.data])
+        })
+    }, 350)
   })
 }
 /**
@@ -21,10 +23,12 @@ export function getRecommendSongList(): Return {
 export function getSongList(id: string | number): Return {
   const url = '/api/songlist'
   return new Promise((resolve) => {
-    ai.get(url, { params: { id } })
-      .then((res) => {
-        resolve([res.errMsg, res.data])
-      })
+    setTimeout(() => {
+      ai.get(url, { params: { id } })
+        .then((res) => {
+          resolve([res.errMsg, res.data])
+        })
+    }, 100)
   })
 }
 

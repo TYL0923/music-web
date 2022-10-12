@@ -4,6 +4,7 @@ import { addSongByMid, removeSongById } from '../api/songListApi'
 const route = useRoute()
 const songListDetail = ref<SongList>()
 const { player } = usePlayer()
+const isLoading = ref<boolean>(false)
 const tabOption = [
   {
     label: '歌曲',
@@ -24,9 +25,11 @@ const songList = computed(() => {
 })
 
 async function initSongList() {
+  isLoading.value = true
   const [err, data] = await getSongList(route.query.id as string)
   if (!err && data)
     songListDetail.value = data
+  isLoading.value = false
 }
 async function removeSong(id: string) {
   const [err, data] = await removeSongById(id, songListDetail.value!.dirid!)
@@ -69,7 +72,8 @@ watchEffect(initSongList)
 </script>
 
 <template>
-  <div>
+  <Skeleton v-if="isLoading" type="songList" />
+  <div v-else>
     <div flex flex-items-center>
       <img w-40 h-40 rounded-2 mr-6 :src="songListDetail?.logo || ''" alt="">
       <div flex-1 text-sm text-gray-400 flex flex-col justify-between py-2>

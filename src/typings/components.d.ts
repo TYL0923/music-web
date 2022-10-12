@@ -35,6 +35,7 @@ declare module '@vue/runtime-core' {
     Player: typeof import('./../components/Player.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Skeleton: typeof import('./../components/Skeleton.vue')['default']
     SongCard: typeof import('./../components/SongCard.vue')['default']
     SongListCard: typeof import('./../components/SongListCard.vue')['default']
     SongListItem: typeof import('./../components/SongListItem.vue')['default']
