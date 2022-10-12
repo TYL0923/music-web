@@ -50,6 +50,8 @@ declare global {
   const reactive: typeof import('vue')['reactive']
   const readonly: typeof import('vue')['readonly']
   const ref: typeof import('vue')['ref']
+  const refresh: typeof import('../api/userApi')['refresh']
+  const removeSongById: typeof import('../api/songListApi')['removeSongById']
   const resolveComponent: typeof import('vue')['resolveComponent']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']

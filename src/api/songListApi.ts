@@ -70,6 +70,21 @@ export function removeSongById(id: string, dirid: number): Return {
   })
 }
 /**
+ * 添加歌曲到歌单
+ * @param mid 歌曲mid
+ * @param dirid 歌单dirid
+ * @returns
+ */
+export function addSongByMid(mid: string, dirid: string): Return {
+  const url = '/api/songlist/add'
+  return new Promise((resolve) => {
+    ai.get(url, { params: { mid, dirid } })
+      .then((res) => {
+        resolve([res.errMsg, res.data || res.message])
+      })
+  })
+}
+/**
  * 获取日推歌曲
  * @returns
  */

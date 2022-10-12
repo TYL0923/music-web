@@ -2,7 +2,7 @@
 import { message } from 'ant-design-vue'
 import { geUserCreatetSongList, getUserCollectSongList } from './api/songListApi'
 import { refresh } from './api/userApi'
-const { isShow: loginIsShow, account, isLocal: loginIsLocal } = useLogin()
+const { isShow: loginIsShow, account, isLocal: loginIsLocal, songList } = useLogin()
 const { playListDrawerVisible, player } = usePlayer()
 const userDetail = ref<UserDetail>()
 const userCreateSongList = ref<Array<Record<string, string | number>>>([])
@@ -37,8 +37,15 @@ async function initUserDetail() {
 async function initUserCreateSongList() {
   const [err, data] = await geUserCreatetSongList(account.value)
   if (!err && data) {
+    songList.value = []
     // 排除Qzone,我喜欢，本地上传歌单
     userCreateSongList.value = data.list.filter((item: Record<string, string | number>) => {
+      if (![205, 206].includes(item.dirid as number)) {
+        songList.value.push({
+          label: item.diss_name,
+          dirid: item.dirid,
+        })
+      }
       return ![205, 201, 206].includes(item.dirid as number)
     })
   }

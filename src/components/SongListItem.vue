@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { message } from 'ant-design-vue'
 import useDiffClick from '../composables/useDiffClick'
 const props = defineProps<{
   data: Song
@@ -7,8 +8,10 @@ const props = defineProps<{
 const emits = defineEmits<{
   (e: 'playList'): void
   (e: 'removeSong', id: string): void
+  (e: 'addSong', mid: string, dirid: string): void
 }>()
 const { player } = usePlayer()
+const { songList } = useLogin()
 const singer = computed(() => {
   return props.data.singer.reduce((pre, cur, idx) => {
     return idx === 0 ? `${pre}${cur.title?.trim() || cur.name.trim()}` : `${pre} | ${cur.title?.trim() || cur.name.trim()}`
@@ -57,7 +60,44 @@ const operationOption = [
   },
 
 ]
-
+const addOption = computed(() => {
+  return [
+    {
+      label: '播放列表',
+      dirid: '-1',
+    },
+  ]
+    .concat(songList.value.find(item => item.label === '我喜欢') as any)
+    .concat([
+      {
+        label: '',
+        dirid: '-',
+      },
+    ])
+    .concat(songList.value.filter(item => item.label !== '我喜欢') as any)
+})
+function handleAddSong(dirid: string) {
+  if (dirid === '-1') {
+    const addRes = player.addPlaySong(props.data)
+    if (addRes) {
+      message.success({
+        key: 'addRes',
+        content: '已添加',
+        duration: 1,
+      })
+    }
+    else {
+      message.info({
+        key: 'addRes',
+        content: '歌曲已存在',
+        duration: 1,
+      })
+    }
+  }
+  else {
+    emits('addSong', props.data.songmid!, dirid)
+  }
+}
 function handleClick() {
   player.togglePlaySong(props.data)
 }
@@ -87,7 +127,23 @@ const { handleClickFn, handleDoubleClickFn } = useDiffClick(handleClick, handleD
           @click="handleClickFn" @dblclick="handleDoubleClickFn"
         />
         <Icon v-else icon="ph:pause" hover="cursor-pointer" @click="player.isPause = true" />
-        <Icon icon="ph:chat-centered-dots" />
+        <a-dropdown :trigger="['click']">
+          <Icon icon="ph:plus-circle" />
+          <template #overlay>
+            <a-menu style="width: 180px">
+              <template v-for="item in addOption">
+                <a-menu-item
+                  v-if="item.dirid !== '-'" :key="item.dirid"
+                  @click="handleAddSong(item.dirid)"
+                >
+                  <span text-sm text-gray-900>{{ item.label }}</span>
+                </a-menu-item>
+                <a-menu-divider v-else :key="`${item.dirid}-`" />
+              </template>
+            </a-menu>
+          </template>
+        </a-dropdown>
+
         <a-dropdown :trigger="['click']">
           <Icon icon="ph:dots-three-circle" />
           <template #overlay>

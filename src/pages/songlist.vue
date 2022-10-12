@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { message } from 'ant-design-vue'
-import { removeSongById } from '../api/songListApi'
+import { addSongByMid, removeSongById } from '../api/songListApi'
 const route = useRoute()
 const songListDetail = ref<SongList>()
 const { player } = usePlayer()
@@ -46,6 +46,25 @@ async function removeSong(id: string) {
     })
   }
 }
+async function addSong(mid: string, dirid: string) {
+  const [err, data] = await addSongByMid(mid, dirid)
+  if (!err && data) {
+    message.success({
+      key: 'addSong',
+      content: '添加成功',
+      duration: 1,
+    })
+    initSongList()
+  }
+  else {
+    message.error({
+      key: 'addSong',
+      content: '添加失败, 请重试',
+      duration: 1,
+    })
+  }
+}
+
 watchEffect(initSongList)
 </script>
 
@@ -90,6 +109,7 @@ watchEffect(initSongList)
             <SongListItem
               v-for="song in songList" :key="song.songmid" :data="song"
               @remove-song="removeSong"
+              @add-song="addSong"
             />
           </div>
         </a-tab-pane>

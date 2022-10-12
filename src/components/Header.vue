@@ -60,7 +60,7 @@ function logout() {
             alt=""
           >
           <span font-bold>{{ account }}</span>
-          <Icon ml-4 text-gray-500 text-3xl icon="ph:user" @click="logout" />
+          <Icon ml-4 text-gray-500 text-3xl icon="ph:arrow-square-right" @click="logout" />
         </div>
       </template>
       <template v-else>

@@ -142,9 +142,11 @@ class Player {
    * 添加歌曲到播放列表最前面
    * @param song
    */
-  addPlaySong(song: Song) {
-    if (!this.isExist(song))
-      this.playList.unshift(song)
+  addPlaySong(song: Song): boolean {
+    if (this.isExist(song))
+      return false
+    this.playList.unshift(song)
+    return true
   }
 
   // 恢复状态
