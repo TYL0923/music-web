@@ -28,3 +28,33 @@ export function getNewSongs(type = '0'): Return {
     }, 350)
   })
 }
+/**
+ * 获取热搜词
+ * @returns
+ */
+export function getHot(): Return {
+  const url = '/api/search/hot'
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      ai.get(url)
+        .then((res) => {
+          resolve([res.errMsg, res])
+        })
+    }, 0)
+  })
+}
+/**
+ * 获取搜索推荐
+ * @returns
+ */
+export function getSearchRecommend(keyWord: string): Return {
+  const url = '/api/search/quick'
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      ai.get(url, { params: { key: keyWord } })
+        .then((res) => {
+          resolve([res.errMsg, res.data])
+        })
+    }, 0)
+  })
+}
