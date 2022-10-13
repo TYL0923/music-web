@@ -58,3 +58,18 @@ export function getSearchRecommend(keyWord: string): Return {
     }, 0)
   })
 }
+/**
+ * 获取搜索结果
+ * @returns
+ */
+export function getSearchList(keyWord: string, t: string): Return {
+  const url = '/api/search'
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      ai.get(url, { params: { key: keyWord, pageNo: 1, pageSize: 10, t } })
+        .then((res) => {
+          resolve([res.errMsg, res.data])
+        })
+    }, 0)
+  })
+}

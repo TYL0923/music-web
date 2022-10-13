@@ -5,6 +5,7 @@ import { useDebounceFn } from '@vueuse/shared'
 import { getHot, getSearchRecommend } from '../api/songApi'
 const { toggle } = useLogin()
 const { account, isLocal } = useLogin()
+const router = useRouter()
 const searchVisible = ref<boolean>(false)
 const keyWord = ref<string>('')
 const hot = ref<Array<Record<string, number>>>([])
@@ -34,7 +35,7 @@ const searchRecommendCom = computed(() => {
     }
     return pre.concat(_arr)
   }, [] as Array<Record<string, string>>)
-  // value.reverse()
+  value.reverse()
   return value
 })
 function logout() {
@@ -66,6 +67,22 @@ function handleFocus() {
   searchVisible.value = true
 }
 function handleBlur() {
+  // blur事件比click事件先执行, 导致dom元素销毁click事件不触发, 使用延时器延缓blur事件的执行
+  setTimeout(() => {
+    searchVisible.value = false
+  }, 350)
+}
+function handleGotoSearch(key: string, type: string) {
+  if (type === '-')
+    return
+  router.push({
+    path: 'search',
+    query: {
+      key,
+      type,
+    },
+  })
+  keyWord.value = key
   searchVisible.value = false
 }
 watchEffect(initHot)
@@ -93,7 +110,7 @@ watchEffect(initHot)
         </a-button>
       </div>
       <div w-300px bg-gray-100 h-40px rounded-xl pt-5px>
-        <a-dropdown :visible="true">
+        <a-dropdown :visible="searchVisible">
           <a-input
             v-model:value="keyWord" placeholder="搜索歌曲"
             :bordered="false"
@@ -105,26 +122,33 @@ watchEffect(initHot)
           </a-input>
           <template #overlay>
             <a-menu v-if="searchRecommendCom.length > 0 && keyWord">
-              <a-menu-item v-for="recommendItem, index in searchRecommendCom" :key="recommendItem.id || index">
+              <a-menu-item
+                v-for="recommendItem, index in searchRecommendCom" :key="recommendItem.id || index"
+              >
                 <a-menu-divider v-if="recommendItem.type === '-'" />
-                <div v-else w-100 flex items-center px-4 line-clamp-1>
+                <div
+                  v-else w-100 flex items-center px-4 line-clamp-1
+                >
                   <div w-5 text-base>
                     <Icon v-if="recommendItem.type === 'song'" icon="ph:music-note" />
                     <Icon v-else-if="recommendItem.type === 'singer'" icon="ph:user" />
                     <Icon v-else-if="recommendItem.type === 'mv'" icon="ph:youtube-logo" />
-                    <Icon v-else-if="recommendItem.type === 'album'" icon="ph:music-note" />
+                    <Icon v-else-if="recommendItem.type === 'album'" icon="ph:music-notes" />
                   </div>
-                  <span ml-2>
+                  <span ml-2 @click="handleGotoSearch(recommendItem.name, recommendItem.type)">
                     {{ `${recommendItem.name}-${recommendItem.singer}` }}
                   </span>
                 </div>
               </a-menu-item>
             </a-menu>
             <a-menu v-else-if="hot.length > 0">
-              <a-menu-item v-for="hotItem in hot" :key="hotItem.h">
+              <a-menu-item
+                v-for="hotItem in hot" :key="hotItem.h"
+                @click="handleGotoSearch(hotItem.k.toString(), 'song')"
+              >
                 <div flex items-center justify-between text-base>
-                  <span>{{ hotItem.h }}</span>
                   <span>{{ hotItem.k }}</span>
+                  <span>{{ hotItem.h }}</span>
                 </div>
               </a-menu-item>
             </a-menu>
