@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDebounce, useDebounceFn } from '@vueuse/shared'
+import { useDebounceFn } from '@vueuse/shared'
 import { message } from 'ant-design-vue'
 import { getSearchList } from '../api/songApi'
 const route = useRoute()
@@ -25,7 +25,7 @@ const tabs: Array<Record<string, string> & { type: 'song' | 'singer' | 'mv' | 'a
     t: '8',
   },
 ]
-const t = ref<string>((tabs.find(item => item.type === route.query.key)?.t || 0).toString())
+const t = ref<string>((tabs.find(item => item.type === route.query.type)?.t || 0).toString())
 const key = ref<string>(route.query.key as string)
 const total = ref<number>(0)
 const searchList = ref<{
@@ -39,6 +39,14 @@ const searchList = ref<{
   singer: [],
   mv: [],
 })
+watch(
+  [() => route.query.type, () => route.query.key],
+  ([newType, newKey]) => {
+    t.value = (tabs.find(item => item.type === newType)?.t || 0).toString()
+    key.value = newKey as string
+    initSearchList()
+  },
+)
 async function addSong(mid: string, dirid: string) {
   const [err, data] = await addSongByMid(mid, dirid)
   if (!err && data) {

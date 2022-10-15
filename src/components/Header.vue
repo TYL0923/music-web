@@ -28,6 +28,7 @@ const searchRecommendCom = computed(() => {
       })
       return p
     }, [] as Array<Record<string, string>>)
+    _arr.reverse()
     if (_arr.length > 0 && idx !== 0) {
       pre.push({
         type: '-',
@@ -67,7 +68,7 @@ function handleFocus() {
   searchVisible.value = true
 }
 function handleBlur() {
-  // blur事件比click事件先执行, 导致dom元素销毁click事件不触发, 使用延时器延缓blur事件的执行
+  // blur事件比click事件先执行, 导致dom元素销毁click事件不触发, 使用延时器延缓dom元素销毁
   setTimeout(() => {
     searchVisible.value = false
   }, 350)
@@ -84,6 +85,17 @@ function handleGotoSearch(key: string, type: string) {
   })
   keyWord.value = key
   searchVisible.value = false
+}
+function handleEnter() {
+  if (keyWord.value.length === 0)
+    return
+  router.push({
+    path: 'search',
+    query: {
+      key: keyWord.value,
+      type: '0',
+    },
+  })
 }
 watchEffect(initHot)
 </script>
@@ -115,6 +127,7 @@ watchEffect(initHot)
             v-model:value="keyWord" placeholder="搜索歌曲"
             :bordered="false"
             @focus="handleFocus" @blur="handleBlur" @change="handleInput"
+            @keyup.enter="handleEnter"
           >
             <template #prefix>
               <Icon icon="ph:magnifying-glass" width="20px" />
@@ -124,6 +137,7 @@ watchEffect(initHot)
             <a-menu v-if="searchRecommendCom.length > 0 && keyWord">
               <a-menu-item
                 v-for="recommendItem, index in searchRecommendCom" :key="recommendItem.id || index"
+                @click="handleGotoSearch(recommendItem.name, recommendItem.type)"
               >
                 <a-menu-divider v-if="recommendItem.type === '-'" />
                 <div
@@ -135,7 +149,7 @@ watchEffect(initHot)
                     <Icon v-else-if="recommendItem.type === 'mv'" icon="ph:youtube-logo" />
                     <Icon v-else-if="recommendItem.type === 'album'" icon="ph:music-notes" />
                   </div>
-                  <span ml-2 @click="handleGotoSearch(recommendItem.name, recommendItem.type)">
+                  <span ml-2>
                     {{ `${recommendItem.name}-${recommendItem.singer}` }}
                   </span>
                 </div>
