@@ -70,6 +70,6 @@ export function getSearchList(keyWord: string, t: string): Return {
         .then((res) => {
           resolve([res.errMsg, res.data])
         })
-    }, 0)
+    }, 350)
   })
 }

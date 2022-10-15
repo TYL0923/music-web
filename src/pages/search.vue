@@ -25,6 +25,17 @@ const tabs: Array<Record<string, string> & { type: 'song' | 'singer' | 'mv' | 'a
     t: '8',
   },
 ]
+const isLoading = ref<{
+  'song': boolean
+  'singer': boolean
+  'album': boolean
+  'mv': boolean
+}>({
+  song: false,
+  singer: false,
+  album: false,
+  mv: false,
+})
 const t = ref<string>((tabs.find(item => item.type === route.query.type)?.t || 0).toString())
 const key = ref<string>(route.query.key as string)
 const total = ref<number>(0)
@@ -69,6 +80,7 @@ const handleSearchInputChange = useDebounceFn(() => {
   initSearchList()
 }, 350)
 async function initSearchList() {
+  isLoading.value.song = true
   const [err, data] = await getSearchList(key.value, t.value)
   if (!err && data) {
     total.value = data.total
@@ -89,6 +101,7 @@ async function initSearchList() {
         break
     }
   }
+  isLoading.value.song = false
 }
 initSearchList()
 </script>
@@ -117,12 +130,18 @@ initSearchList()
               专辑
             </div>
           </div>
-          <SongListItem
-            v-for="song in searchList!.song" :key="song.songmid" :data="song"
-            @add-song="addSong"
-          />
+          <template v-if="isLoading.song">
+            <Skeleton v-for="i in 9" :key="i" type="list" />
+          </template>
+          <template v-else>
+            <SongListItem
+              v-for="song in searchList!.song" :key="song.songmid" :data="song"
+              @add-song="addSong"
+            />
+          </template>
         </div>
       </a-tab-pane>
     </a-tabs>
+    <div h-100px />
   </div>
 </template>
