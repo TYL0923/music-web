@@ -14,7 +14,7 @@ const { player } = usePlayer()
 const { songList } = useLogin()
 const singer = computed(() => {
   return props.data.singer.reduce((pre, cur, idx) => {
-    return idx === 0 ? `${pre}${cur.title?.trim() || cur.name.trim()}` : `${pre} | ${cur.title?.trim() || cur.name.trim()}`
+    return idx === 0 ? `${pre}${(cur.name || cur.singer_name || '').trim()}` : `${pre} | ${(cur.name || cur.singer_name || '').trim()}`
   }, '')
 })
 const isplay = computed(() => {
@@ -119,7 +119,7 @@ const { handleClickFn, handleDoubleClickFn } = useDiffClick(handleClick, handleD
         <div min-w-20px leading-1 text-gray-500>
           <Icon icon="ph:heart" mr-1 text-xl />
         </div>
-        <span line-clamp-1>{{ data.songname || '' }}</span>
+        <span line-clamp-1>{{ data.songname || data.title || '' }}</span>
       </div>
       <div class="operation" flex items-center text-xl text-gray-500 gap-x-3 px-4>
         <Icon
@@ -163,7 +163,7 @@ const { handleClickFn, handleDoubleClickFn } = useDiffClick(handleClick, handleD
       {{ singer }}
     </div>
     <div style="width: 30%" line-clamp-1 :class="isplay ? 'text-emerald-500' : 'text-gray-900'">
-      {{ data.albumname }}
+      {{ data.albumname || data.album?.name || '' }}
     </div>
   </div>
 </template>

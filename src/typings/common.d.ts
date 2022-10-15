@@ -48,9 +48,13 @@ type SongList = {
   encryt_uin?: string
 }
 type Singer = {
-  id: number
-  mid: string
-  name: string
+  singer_id?: number
+  singer_mid?: string
+  singer_name?: string
+
+  id?: number
+  mid?: string
+  name?: string
   pmid?: string
   title?: string
   type?: number
@@ -63,28 +67,36 @@ type SongFile = {
   'sizeflac': number
 }
 type Mv = {
-  listennum: number
-  mv_id: number
-  mvtitle: string
-  picurl: string
-  pub_date: string
-  publictime: string
-  singer_id: number
-  singer_mid: string
-  singer_name: string
-  singerid: number
-  singermid: string
-  singername: string
+  vid?: string
+  listennum?: number
+  listenCount?: string
+  mv_id?: number
+  mvtitle?: string
+  title?: string
+  picurl?: string
+  pic?: string
+  pub_date?: string
+  publictime?: string
+  singer_id?: number
+  singer_mid?: string
+  singer_name?: string
+  singerid?: number
+  singermid?: string
+  singername?: string
   singers: Singer[]
 }
 type Album = {
-  id: number
-  mid: string
-  name: string
-  pmid: string
-  subtitle: string
-  time_public: string
-  title: string
+  album_mid?: string
+  album_name?: string
+  desc?: string
+  pub_time?: string
+  id?: number
+  mid?: string
+  name?: string
+  pmid?: string
+  subtitle?: string
+  time_public?: string
+  title?: string
   singers: Singer[]
 }
 type Song = {

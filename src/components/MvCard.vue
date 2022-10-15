@@ -4,13 +4,15 @@ const props = defineProps<{
   data: Mv
 }>()
 const singer = computed(() => {
+  if (!props.data.singers)
+    return props.data.singer_name
   return props.data.singers.reduce((pre, cur, idx) => {
-    return idx === 0 ? pre + cur.name.trim() : `${pre} | ${cur.name.trim()}`
+    return idx === 0 ? pre + (cur.name || cur.singer_name || '').trim() : `${pre} | ${(cur.name || cur.singer_name || '').trim()}`
   }, '')
 })
 const num = computed(() => {
-  const y = props.data.listennum / 100000000
-  const w = props.data.listennum / 10000
+  const y = (props.data.listennum || Number(props.data.listenCount)) / 100000000
+  const w = (props.data.listennum || Number(props.data.listenCount)) / 10000
   return y >= 1 ? `${y.toFixed(2)}亿` : `${w.toFixed(2)}万`
 })
 </script>
@@ -18,7 +20,7 @@ const num = computed(() => {
 <template>
   <div w-50>
     <div
-      :style="{ backgroundImage: `url('${data.picurl}')` }"
+      :style="{ backgroundImage: `url('${data.picurl || data.pic}')` }"
       w-50 h-30 rounded-2
       relative
       bg-cover bg-center bg-norepact
@@ -37,7 +39,7 @@ const num = computed(() => {
     </div>
     <div px-1 mt-1>
       <h5 text-sm mb-1 line-clamp-1>
-        {{ data.mvtitle }}
+        {{ data.mvtitle || data.title || '' }}
       </h5>
       <p line-clamp-1 text-sm mb-0>
         {{ singer }}

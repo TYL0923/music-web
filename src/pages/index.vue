@@ -3,6 +3,6 @@
 
 <template>
   <div>
-    <Skeleton type="songListCard" />
+    <Skeleton type="singerInfo" />
   </div>
 </template>
