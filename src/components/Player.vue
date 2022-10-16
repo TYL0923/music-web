@@ -15,6 +15,9 @@ const songImg = computed(() => {
 const progress = computed(() => {
   return player.playState.value.progress
 })
+const time = computed(() => {
+  return (originTime: number) => transfromTime(originTime)
+})
 function transfromTime(s: number | string) {
   if (typeof s === 'string')
     s = Number(s)
@@ -23,10 +26,9 @@ function transfromTime(s: number | string) {
   const second = Math.ceil(s % 60).toString()
   return `${minute.padStart(2, '0')}:${second.padStart(2, '0')}`
 }
-const playModeOptions = ['']
-const time = computed(() => {
-  return (originTime: number) => transfromTime(originTime)
-})
+function handleGotoSinger() {
+
+}
 </script>
 
 <template>
@@ -45,7 +47,8 @@ const time = computed(() => {
       />
       <div flex-1 ml-2>
         <p text-sm mb-1 line-clamp-1>
-          {{ nameAndSinger }}
+          <span>{{ player.playSong.songname }}</span> -
+          <Singer :data="player.playSong.singer" />
         </p>
         <span flex items-center text-lg gap-x-2>
           <Icon icon="ph:heart" />

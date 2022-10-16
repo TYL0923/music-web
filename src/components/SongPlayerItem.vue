@@ -4,17 +4,9 @@ const props = defineProps<{
   data: Song
 }>()
 const { player } = usePlayer()
-const singer = computed(() => {
-  return props.data.singer.reduce((pre, cur, idx) => {
-    return idx === 0 ? `${pre}${(cur.title || cur.name || '').trim()}` : `${pre} | ${(cur.title || cur.name || '').trim()}`
-  }, '')
-})
 const isplay = computed(() => {
   return props.data.songmid === player.playSong.songmid
 })
-// const isPause = computed(() => {
-//   return player.audio.value.paused
-// })
 function transfromTime(s: number | string) {
   if (typeof s === 'string')
     s = Number(s)
@@ -52,7 +44,7 @@ const time = computed(() => {
         {{ data.songname || '' }}
       </p>
       <p mb-0 text-sm line-clamp-1>
-        {{ singer }}
+        <Singer :data="data.singer" />
       </p>
     </span>
     <span w-30 flex items-center justify-end>

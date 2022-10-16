@@ -12,9 +12,12 @@ onMounted(() => {
   function changeFontSize() {
     const docEl = document.documentElement
     const width = docEl.getBoundingClientRect().width
-    const rem = width / 90
-    if (rem >= 12 && rem <= 14.2)
-      docEl.style.fontSize = `${rem}px`
+    let rem = width / 90
+    if (rem < 12)
+      rem = 12
+    if (rem > 14.2)
+      rem = 14.2
+    docEl.style.fontSize = `${rem}px`
   }
   function handleUnLoad() {
     player.restore()

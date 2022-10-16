@@ -1,5 +1,5 @@
 import { useStorage } from '@vueuse/core'
-
+import { message } from 'ant-design-vue'
 import type { Ref } from 'vue'
 interface PlayState {
   playMode: 'order' | 'random' | 'cycle'
@@ -86,6 +86,10 @@ class Player {
     return this._playList.value.findIndex(songItem => songItem.songmid === this._playSate.value.playSong?.songmid)
   }
 
+  /**
+   * 播放歌单, 默认播放第一首
+   * @param playList 歌单列表
+   */
   playAll(playList: Song[]) {
     if (playList && playList.length !== 0)
       this._playList.value = playList
@@ -110,6 +114,9 @@ class Player {
     this.playList = ([] as Song[]).concat(beforList).concat(curList).concat(afterList)
   }
 
+  /**
+   * 播放下一首
+   */
   playNextSong() {
     let nextSong: Song | undefined
     if (this.playMode === 'order' || this.playMode === 'cycle')
@@ -134,10 +141,6 @@ class Player {
     }
   }
 
-  mayLenght(len: number) {
-    return len > this.playList.length ? this.playList.length : len
-  }
-
   /**
    * 添加歌曲到播放列表最前面
    * @param song
@@ -152,13 +155,15 @@ class Player {
   // 恢复状态
   async restore() {
     if (this.playSong) {
-      const [err, data] = await getSongPlayUrl(this.playSong.songmid!)
-      let url = ''
-      if (!err && data)
-        url = Object.entries(data)[0][1] as string
-      this.audio.value.src = url
-      this.audio.value.currentTime = this.playState.value.playTime
-      this.isPause = true
+      const url = await getUrl(this.playSong.songmid!)
+      if (url) {
+        this.audio.value.src = url
+        this.audio.value.currentTime = this.playState.value.playTime
+        this.isPause = true
+      }
+      else {
+        this.playNextSong()
+      }
     }
   }
 
@@ -170,7 +175,21 @@ class Player {
     this.playList = this.playList.filter(songItem => songItem.songmid !== song.songmid)
   }
 
-  isExist(song: Song): Song | undefined {
+  /**
+   * 比较len与歌单长度之间的值
+   * @param len
+   * @returns len > this.playList.length ? this.playList.length : len
+   */
+  private mayLenght(len: number) {
+    return len > this.playList.length ? this.playList.length : len
+  }
+
+  /**
+   * 检查歌曲是否在歌单
+   * @param song
+   * @returns
+   */
+  private isExist(song: Song): Song | undefined {
     return this.playList.find(songItem => songItem.songmid === song.songmid)
   }
 }
@@ -178,10 +197,18 @@ class Player {
 let playInstance: Player | null = null
 const playListDrawerVisible = ref<boolean>(false)
 
-function createAudio(): Ref<HTMLAudioElement> {
-  const audio = ref(document.createElement('audio'))
-  return audio
+async function getUrl(songmid: string) {
+  const [err, data] = await getSongPlayUrl(songmid)
+  let url = ''
+  if (!err && data && Object.keys(data).length > 0) { url = Object.entries(data)[0][1] as string }
+  else {
+    message.error({
+      content: '请求播放链接失败，请检查是否登录',
+    })
+  }
+  return url
 }
+
 function handleDurationchange() {
   playInstance!.playState.value.totalTime = playInstance!.audio.value.duration
 }
@@ -197,19 +224,14 @@ function watchPlaySongChange() {
     watch(
       () => playInstance!.playSong,
       async (song) => {
-        const [err, data] = await getSongPlayUrl(song.songmid!)
-        let url = ''
-        if (!err && data) {
-          const songItem = Object.entries(data)[0]
-          if (songItem) {
-            url = songItem[1] as string
-            playInstance!.audio.value.autoplay = true
-            playInstance!.audio.value.src = url
-          }
-          else {
-            // 需要vip
-            playInstance!.playNextSong()
-          }
+        const url = await getUrl(song.songmid!)
+        if (url) {
+          playInstance!.audio.value.autoplay = true
+          playInstance!.audio.value.src = url
+        }
+        else {
+          // 需要vip
+          playInstance!.playNextSong()
         }
       },
     )
@@ -254,6 +276,10 @@ function watchIsLoop() {
       },
     )
   }
+}
+function createAudio(): Ref<HTMLAudioElement> {
+  const audio = ref(document.createElement('audio'))
+  return audio
 }
 export function usePlayer() {
   if (!playInstance) {

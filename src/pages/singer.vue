@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { getSingerInfo } from '../api/singerApi'
-// const route = useRoute()
-const singermid = ref<string>('000qrPik2w6lDr')
+const route = useRoute()
+const singermid = ref<string>(route.query.mid as string)
 const singer = ref()
+watch(
+  () => route.query.mid,
+  (newMid) => {
+    singermid.value = newMid as string
+  },
+)
 const tabKey = ref<string>('song')
 const tabs: Array<Record<string, string> & { key: 'song' | 'album' | 'mv' }> = [
   {
@@ -117,14 +123,14 @@ watchEffect(initSingerMv)
 <template>
   <div>
     <Skeleton v-if="isLoading.info" type="singerInfo" />
-    <div v-else flex>
+    <div v-else flex items-center>
       <img
         mx-6
         w-50 h-50 rounded-full
         bg-center bg-cover
-        src="https://y.qq.com/music/photo_new/T001R300x300M000000qrPik2w6lDr.jpg?max_age=2592000"
+        :src="`https://y.qq.com/music/photo_new/T001R300x300M000${singermid || ''}.jpg?max_age=2592000`"
       >
-      <div py-4>
+      <div py-4 flex-1>
         <h1>{{ singer?.singername || '' }}</h1>
         <p
           text-base
@@ -141,7 +147,7 @@ watchEffect(initSingerMv)
             <template v-if="isLoading.song">
               <Skeleton v-for="i in 6" :key="i" type="list" />
             </template>
-            <div>
+            <div v-else>
               <SongListItem
                 v-for="song in singerSongs?.list || []" :key="song.songmid" :data="song"
               />
@@ -152,7 +158,9 @@ watchEffect(initSingerMv)
               <template v-if="isLoading.album">
                 <Skeleton v-for="i in 10" :key="i" type="albumCard" />
               </template>
-              <AlbumCard v-for="album in singerAlbum?.list || []" :key="album.album_mid" :data="album" />
+              <template v-else>
+                <AlbumCard v-for="album in singerAlbum?.list || []" :key="album.album_mid" :data="album" />
+              </template>
             </div>
           </template>
           <template v-if="tab.key === 'mv'">
@@ -160,7 +168,9 @@ watchEffect(initSingerMv)
               <template v-if="isLoading.mv">
                 <Skeleton v-for="i in 10" :key="i" type="mvCard" />
               </template>
-              <MvCard v-for="mv in singerMv?.list || []" :key="mv.vid" :data="mv" />
+              <template v-else>
+                <MvCard v-for="mv in singerMv?.list || []" :key="mv.vid" :data="mv" />
+              </template>
             </div>
           </template>
         </a-tab-pane>

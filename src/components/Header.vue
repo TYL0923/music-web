@@ -38,6 +38,7 @@ const searchRecommendCom = computed(() => {
   value.reverse()
   return value
 })
+
 function logout() {
   Modal.confirm({
     title: '是否退出登录',
@@ -88,6 +89,7 @@ function handleGotoSearch(key: string, type: string) {
 function handleEnter() {
   if (keyWord.value.length === 0)
     return
+  searchVisible.value = false
   router.push({
     path: 'search',
     query: {
@@ -96,6 +98,7 @@ function handleEnter() {
     },
   })
 }
+
 watchEffect(initHot)
 </script>
 
@@ -110,13 +113,13 @@ watchEffect(initHot)
       <div flex item-center>
         <a-button type="text" size="small">
           <template #icon>
-            <Icon icon="ph:caret-left" width="20px" />
+            <Icon icon="ph:caret-left" width="20px" @click="$router.go(-1)" />
           </template>
         </a-button>
-        <span mx-4>{{ $route.path }}</span>
+        <span mx-4 />
         <a-button type="text" size="small">
           <template #icon>
-            <Icon icon="ph:caret-right" width="20px" />
+            <Icon icon="ph:caret-right" width="20px" @click="$router.go(1)" />
           </template>
         </a-button>
       </div>

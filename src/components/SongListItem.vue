@@ -11,11 +11,6 @@ const emits = defineEmits<{
 }>()
 const { player } = usePlayer()
 const { songList } = useLogin()
-const singer = computed(() => {
-  return props.data.singer.reduce((pre, cur, idx) => {
-    return idx === 0 ? `${pre}${(cur.name || cur.singer_name || '').trim()}` : `${pre} | ${(cur.name || cur.singer_name || '').trim()}`
-  }, '')
-})
 const isplay = computed(() => {
   return props.data.songmid === player.playSong.songmid
 })
@@ -46,7 +41,6 @@ const operationOption = [
     label: '删除',
     key: 'remove',
     handle: () => {
-      // console.log(props.data)
       if (props.data.songmid === player.playSong.songmid)
         player.playNextSong()
       player.removeSong(props.data)
@@ -159,7 +153,7 @@ const { handleClickFn, handleDoubleClickFn } = useDiffClick(handleClick, handleD
       </div>
     </div>
     <div style="width: 30%" line-clamp-1 :class="isplay ? 'text-emerald-500' : 'text-gray-900'">
-      {{ singer }}
+      <Singer :data="data.singer" />
     </div>
     <div style="width: 30%" line-clamp-1 :class="isplay ? 'text-emerald-500' : 'text-gray-900'">
       {{ data.albumname || data.album?.name || '' }}
