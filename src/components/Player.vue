@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { usePlayer } from '../composables/usePlayer'
-import { useSongImageUrl } from '../composables/useSongImageUrl'
 const { player, playListDrawerVisible } = usePlayer()
 const singer = computed(() => {
   return player.playSong.singer.reduce((pre, cur, idx) => {
-    return idx === 0 ? `${pre}${cur.title?.trim() || cur.name.trim()}` : `${pre} | ${cur.title?.trim() || cur.name.trim()}`
+    return idx === 0 ? `${pre}${(cur.title || cur.name || '').trim()}` : `${pre} | ${(cur.title || cur.name || '').trim()}`
   }, '')
 })
 const nameAndSinger = computed(() => {
   return `${player.playSong.songname} - ${singer.value}`
 })
 const songImg = computed(() => {
-  return useSongImageUrl(`${player.playSong.albummid}_1` || '')
+  return `https://y.qq.com/music/photo_new/T002R300x300M000${player.playSong.albummid}_1.jpg?max_age=2592000`
 })
 const progress = computed(() => {
   return player.playState.value.progress

@@ -76,7 +76,7 @@ const props = withDefaults(
       </div>
     </template>
     <template v-else-if="type === 'singerInfo'">
-      <div flex>
+      <div flex items-center>
         <main w-50 h-50 mx-6 rounded-full />
         <main py-4 w-200 h-40 rounded-2 />
       </div>

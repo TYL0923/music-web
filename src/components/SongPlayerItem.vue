@@ -6,7 +6,7 @@ const props = defineProps<{
 const { player } = usePlayer()
 const singer = computed(() => {
   return props.data.singer.reduce((pre, cur, idx) => {
-    return idx === 0 ? `${pre}${cur.title?.trim() || cur.name.trim()}` : `${pre} | ${cur.title?.trim() || cur.name.trim()}`
+    return idx === 0 ? `${pre}${(cur.title || cur.name || '').trim()}` : `${pre} | ${(cur.title || cur.name || '').trim()}`
   }, '')
 })
 const isplay = computed(() => {

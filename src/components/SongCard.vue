@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { useSongImageUrl } from '../composables/useSongImageUrl'
 const props = defineProps<{
   data: Song
 }>()
 const singer = computed(() => {
   return props.data.singer.reduce((pre, cur, idx) => {
-    return idx === 0 ? pre + cur.title?.trim() || cur.name.trim() : `${pre} | ${cur.title?.trim() || cur.name.trim()}`
+    return idx === 0 ? pre + (cur.title || cur.name || '').trim() : `${pre} | ${(cur.title || cur.name || '').trim()}`
   }, '')
 })
 function transfromTime(s: number | string) {
@@ -17,6 +16,9 @@ function transfromTime(s: number | string) {
   const second = Math.ceil(s % 60).toString()
   return `${minute.padStart(2, '0')}:${second.padStart(2, '0')}`
 }
+const songImageUrl = computed(() => {
+  return (mid: string) => `https://y.qq.com/music/photo_new/T002R300x300M000${mid}.jpg?max_age=2592000`
+})
 const time = computed(() => {
   return transfromTime(props.data.interval)
 })
@@ -25,7 +27,7 @@ const time = computed(() => {
 <template>
   <div flex items-center max-w-100>
     <div
-      :style="{ backgroundImage: `url('${useSongImageUrl(data.album?.pmid || '')}')` }"
+      :style="{ backgroundImage: `url('${songImageUrl(data.album?.pmid || '')}')` }"
       w-25 h-25 rounded-1
       relative
       bg-cover bg-center bg-norepact
