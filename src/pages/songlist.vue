@@ -4,6 +4,7 @@ import { addSongByMid, removeSongById } from '../api/songListApi'
 const route = useRoute()
 const songListDetail = ref<SongList>()
 const { player } = usePlayer()
+const { uin } = useLogin()
 const isLoading = ref<boolean>(false)
 const tabOption = [
   {
@@ -112,6 +113,7 @@ watchEffect(initSongList)
             </div>
             <SongListItem
               v-for="song in songList" :key="song.songmid" :data="song"
+              :more-menu-omit="uin !== songListDetail?.uin ? ['remove'] : []"
               @remove-song="removeSong"
               @add-song="addSong"
             />

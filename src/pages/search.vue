@@ -136,6 +136,7 @@ initSearchList()
           <template v-else>
             <SongListItem
               v-for="song in searchList!.song" :key="song.songmid" :data="song"
+              :more-menu-omit="['remove']"
               @add-song="addSong"
             />
           </template>

@@ -2,7 +2,7 @@
 import { message } from 'ant-design-vue'
 import { geUserCreatetSongList, getUserCollectSongList } from './api/songListApi'
 import { refresh } from './api/userApi'
-const { isShow: loginIsShow, account, isLocal: loginIsLocal, songList } = useLogin()
+const { isShow: loginIsShow, account, isLocal: loginIsLocal, songList, uin } = useLogin()
 const { playListDrawerVisible, player } = usePlayer()
 const userDetail = ref<UserDetail>()
 const userCreateSongList = ref<Array<Record<string, string | number>>>([])
@@ -35,8 +35,10 @@ onMounted(() => {
 
 async function initUserDetail() {
   const [err, data] = await getUserDetail(account.value)
-  if (!err && data)
+  if (!err && data) {
     userDetail.value = data
+    uin.value = data.creator.encrypt_uin
+  }
 }
 async function initUserCreateSongList() {
   const [err, data] = await geUserCreatetSongList(account.value)

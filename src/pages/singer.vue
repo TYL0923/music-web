@@ -150,6 +150,7 @@ watchEffect(initSingerMv)
             <div v-else>
               <SongListItem
                 v-for="song in singerSongs?.list || []" :key="song.songmid" :data="song"
+                :more-menu-omit="['remove']"
               />
             </div>
           </template>

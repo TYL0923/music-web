@@ -1,9 +1,22 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { message } from 'ant-design-vue'
-const props = defineProps<{
-  data: Song
-}>()
+type Key = 'play' | 'nextplay' | 'playMv' | 'love' | 'remove' | 'comment' | '-'
+interface MoreMenuOption {
+  label: string
+  key: Key
+  handle?: () => any
+}
+
+const props = withDefaults(
+  defineProps<{
+    data: Song
+    moreMenuOmit?: Array<Key>
+  }>(),
+  {
+    moreMenuOmit: [] as any,
+  },
+)
 const emits = defineEmits<{
   (e: 'playList'): void
   (e: 'removeSong', id: string): void
@@ -14,7 +27,7 @@ const { songList } = useLogin()
 const isplay = computed(() => {
   return props.data.songmid === player.playSong.songmid
 })
-const operationOption = [
+const operationOption: Array<MoreMenuOption> = ([
   {
     label: '播放',
     key: 'play',
@@ -51,8 +64,7 @@ const operationOption = [
     label: '查看评论',
     key: 'comment',
   },
-
-]
+] as Array<MoreMenuOption>).filter(item => !props.moreMenuOmit.includes(item.key))
 const addOption = computed(() => {
   return [
     {
