@@ -2,7 +2,6 @@
 import { Modal } from 'ant-design-vue'
 import { Icon } from '@iconify/vue'
 import { useDebounceFn } from '@vueuse/shared'
-import { getHot, getSearchRecommend } from '../api/songApi'
 const { toggle } = useLogin()
 const { account, isLocal } = useLogin()
 const router = useRouter()

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
-import type { SelectInfo } from 'ant-design-vue/es/menu/src/interface'
 const props = defineProps<{
   userDetail: UserDetail | undefined
   userCreateSongList: Array<Record<string, string | number>>

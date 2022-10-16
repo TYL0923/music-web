@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { usePlayer } from '../composables/usePlayer'
 const { player, playListDrawerVisible } = usePlayer()
 const singer = computed(() => {
   return player.playSong.singer.reduce((pre, cur, idx) => {

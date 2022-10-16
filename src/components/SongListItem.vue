@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { message } from 'ant-design-vue'
-import useDiffClick from '../composables/useDiffClick'
 const props = defineProps<{
   data: Song
 }>()
