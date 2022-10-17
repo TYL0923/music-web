@@ -3,6 +3,7 @@ import { Icon } from '@iconify/vue'
 const props = defineProps<{
   data: Album
 }>()
+const router = useRouter()
 const singer = computed(() => {
   return props.data.singers.reduce((pre, cur, idx) => {
     return idx === 0 ? pre + (cur.name || cur.singer_name || '').trim() : `${pre} | ${(cur.name || cur.singer_name || '').trim()}`
@@ -11,6 +12,16 @@ const singer = computed(() => {
 const albumImageUrl = computed(() => {
   return `https://y.qq.com/music/photo_new/T002R300x300M000${props.data.mid || props.data.album_mid}.jpg?max_age=2592000`
 })
+function handleGotoAlbum() {
+  if (props.data.album_mid || props.data.mid) {
+    router.push({
+      path: 'album',
+      query: {
+        albummid: props.data.album_mid || props.data.mid,
+      },
+    })
+  }
+}
 </script>
 
 <template>
@@ -28,7 +39,7 @@ const albumImageUrl = computed(() => {
         duration-300 bg-gray-700 bg-opacity-50
         opacity-0 hover="opacity-100 cursor-pointer"
       >
-        <span duration-300 text-white hover="text-emerald-500">
+        <span duration-300 text-white hover="text-emerald-500" @click="handleGotoAlbum">
           <Icon icon="ph:play-fill" width="2rem" />
         </span>
       </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    type?: 'songList' | 'recommend' | 'default' | 'songCard' | 'albumCard' | 'mvCard' | 'songListCard' | 'search' | 'list' | 'singerInfo' | 'mvListItem'
+    type?: 'albumTitle' | 'songList' | 'recommend' | 'default' | 'songCard' | 'albumCard' | 'mvCard' | 'songListCard' | 'search' | 'list' | 'singerInfo' | 'mvListItem'
     w?: number
     h?: number
   }>(), {
@@ -11,8 +11,14 @@ const props = withDefaults(
 
 <template>
   <div class="container">
+    <template v-if="type === 'albumTitle'">
+      <div flex items-center>
+        <main w-50 h-50 rounded-2 mr-6 />
+        <main w-200 h-40 rounded-2 />
+      </div>
+    </template>
     <template v-if="type === 'songList'">
-      <div flex flex-items-center>
+      <div flex items-center>
         <main w-40 h-40 rounded-2 mr-6 />
         <main w-200 h-40 rounded-2 />
       </div>
@@ -79,7 +85,7 @@ const props = withDefaults(
     </template>
     <template v-else-if="type === 'list'">
       <div>
-        <main h-6 my-10 mx-6 rounded-1 />
+        <main v-for="i in 6" :key="i" h-6 my-10 mx-6 rounded-1 />
       </div>
     </template>
     <template v-else-if="type === 'singerInfo'">

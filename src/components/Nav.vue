@@ -19,10 +19,6 @@ const navList = [
         label: '视频',
         key: 'mv',
       },
-      {
-        label: '电台',
-        key: 'radio',
-      },
     ],
   },
   {
@@ -32,18 +28,6 @@ const navList = [
       {
         label: '我喜欢',
         key: 'love',
-      },
-      {
-        label: '已购音乐',
-        key: 'buy',
-      },
-      {
-        label: '最近播放',
-        key: 'lately',
-      },
-      {
-        label: '试听列表',
-        key: 'audition',
       },
 
     ],

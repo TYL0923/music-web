@@ -20,7 +20,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   (e: 'playList'): void
   (e: 'removeSong', id: string): void
-  (e: 'addSong', mid: string, dirid: string): void
+  (e: 'addedSong'): void
 }>()
 const { player } = usePlayer()
 const { songList } = useLogin()
@@ -100,7 +100,8 @@ function handleAddSong(dirid: string) {
     }
   }
   else {
-    emits('addSong', props.data.songmid!, dirid)
+    addSongToList(props.data.songmid!, dirid)
+    emits('addedSong')
   }
 }
 function handleClick() {
@@ -110,6 +111,23 @@ function handleDoubleClick() {
   // todo 双击事件
 }
 const { handleClickFn, handleDoubleClickFn } = useDiffClick(handleClick, handleDoubleClick)
+async function addSongToList(mid: string, dirid: string) {
+  const [err, data] = await addSongByMid(mid, dirid)
+  if (!err && data) {
+    message.success({
+      key: 'addSong',
+      content: '添加成功',
+      duration: 1,
+    })
+  }
+  else {
+    message.error({
+      key: 'addSong',
+      content: '添加失败, 请重试',
+      duration: 1,
+    })
+  }
+}
 </script>
 
 <template>

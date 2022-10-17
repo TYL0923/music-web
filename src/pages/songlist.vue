@@ -50,23 +50,8 @@ async function removeSong(id: string) {
     })
   }
 }
-async function addSong(mid: string, dirid: string) {
-  const [err, data] = await addSongByMid(mid, dirid)
-  if (!err && data) {
-    message.success({
-      key: 'addSong',
-      content: '添加成功',
-      duration: 1,
-    })
-    initSongList()
-  }
-  else {
-    message.error({
-      key: 'addSong',
-      content: '添加失败, 请重试',
-      duration: 1,
-    })
-  }
+function added() {
+  // 歌曲添加歌单成功回调
 }
 
 watchEffect(initSongList)
@@ -115,7 +100,7 @@ watchEffect(initSongList)
               v-for="song in songList" :key="song.songmid" :data="song"
               :more-menu-omit="uin !== songListDetail?.uin ? ['remove'] : []"
               @remove-song="removeSong"
-              @add-song="addSong"
+              @added-song="added"
             />
           </div>
         </a-tab-pane>
