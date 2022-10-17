@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/shared'
-import { message } from 'ant-design-vue'
 import { getSearchList } from '../api/songApi'
 const route = useRoute()
 const tabs: Array<Record<string, string> & { type: 'song' | 'singer' | 'mv' | 'album' }> = [
@@ -8,6 +7,11 @@ const tabs: Array<Record<string, string> & { type: 'song' | 'singer' | 'mv' | 'a
     label: '单曲',
     type: 'song',
     t: '0',
+  },
+  {
+    label: '专辑',
+    type: 'album',
+    t: '8',
   },
   {
     label: '歌手',
@@ -19,24 +23,9 @@ const tabs: Array<Record<string, string> & { type: 'song' | 'singer' | 'mv' | 'a
     type: 'mv',
     t: '12',
   },
-  {
-    label: '专辑',
-    type: 'album',
-    t: '8',
-  },
 ]
-const isLoading = ref<{
-  'song': boolean
-  'singer': boolean
-  'album': boolean
-  'mv': boolean
-}>({
-  song: false,
-  singer: false,
-  album: false,
-  mv: false,
-})
-const t = ref<string>((tabs.find(item => item.type === route.query.type)?.t || 0).toString())
+const isLoading = ref<boolean>(false)
+const t = ref<string>((tabs.find(item => item.type === route.query.type)?.t || 12).toString())
 const key = ref<string>(route.query.key as string)
 const total = ref<number>(0)
 const searchList = ref<{
@@ -58,29 +47,14 @@ watch(
     initSearchList()
   },
 )
-async function addSong(mid: string, dirid: string) {
-  const [err, data] = await addSongByMid(mid, dirid)
-  if (!err && data) {
-    message.success({
-      key: 'addSong',
-      content: '添加成功',
-      duration: 1,
-    })
-  }
-  else {
-    message.error({
-      key: 'addSong',
-      content: '添加失败, 请重试',
-      duration: 1,
-    })
-  }
+function handleTabChange(type: any) {
+  t.value = type.toString()
 }
-
 const handleSearchInputChange = useDebounceFn(() => {
   initSearchList()
 }, 350)
 async function initSearchList() {
-  isLoading.value.song = true
+  isLoading.value = true
   const [err, data] = await getSearchList(key.value, t.value)
   if (!err && data) {
     total.value = data.total
@@ -101,9 +75,9 @@ async function initSearchList() {
         break
     }
   }
-  isLoading.value.song = false
+  isLoading.value = false
 }
-initSearchList()
+watchEffect(initSearchList)
 </script>
 
 <template>
@@ -116,7 +90,7 @@ initSearchList()
         @change="handleSearchInputChange"
       />
     </div>
-    <a-tabs v-model:activeKey="t">
+    <a-tabs v-model:activeKey="t" @change="handleTabChange">
       <a-tab-pane v-for="tab in tabs" :key="tab.t" :tab="tab.label">
         <div v-if="tab.type === 'song'">
           <div text-sm text-gray-500 flex px-2>
@@ -130,7 +104,7 @@ initSearchList()
               专辑
             </div>
           </div>
-          <template v-if="isLoading.song">
+          <template v-if="isLoading">
             <Skeleton v-for="i in 9" :key="i" type="list" />
           </template>
           <template v-else>
@@ -138,6 +112,14 @@ initSearchList()
               v-for="song in searchList!.song" :key="song.songmid" :data="song"
               :more-menu-omit="['remove']"
             />
+          </template>
+        </div>
+        <div v-if="tab.type === 'album'" style="display: grid;grid-template-columns: repeat(5,1fr);" gap-6>
+          <template v-if="isLoading">
+            <Skeleton v-for="i in 10" :key="i" type="albumCard" />
+          </template>
+          <template v-else>
+            <AlbumCard v-for="album in searchList.album" :key="album.mid" :data="album" />
           </template>
         </div>
       </a-tab-pane>

@@ -5,12 +5,12 @@ const props = defineProps<{
 }>()
 const router = useRouter()
 const singer = computed(() => {
-  return props.data.singers.reduce((pre, cur, idx) => {
+  return (props.data.singers || props.data.singer || []).reduce((pre, cur, idx) => {
     return idx === 0 ? pre + (cur.name || cur.singer_name || '').trim() : `${pre} | ${(cur.name || cur.singer_name || '').trim()}`
   }, '')
 })
 const albumImageUrl = computed(() => {
-  return `https://y.qq.com/music/photo_new/T002R300x300M000${props.data.mid || props.data.album_mid}.jpg?max_age=2592000`
+  return `https://y.qq.com/music/photo_new/T002R300x300M000${props.data.mid || props.data.album_mid || props.data.albummid}.jpg?max_age=2592000`
 })
 function handleGotoAlbum() {
   if (props.data.album_mid || props.data.mid) {

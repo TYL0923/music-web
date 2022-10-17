@@ -88,6 +88,7 @@ type Mv = {
 }
 type Album = {
   album_mid?: string
+  albummid?: string
   album_name?: string
   desc?: string
   pub_time?: string
@@ -98,7 +99,8 @@ type Album = {
   subtitle?: string
   time_public?: string
   title?: string
-  singers: Singer[]
+  singers?: Singer[]
+  singer?: Singer[]
 }
 type Song = {
   id?: number
