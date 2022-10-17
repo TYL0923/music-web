@@ -17,7 +17,7 @@ const navList = [
       },
       {
         label: '视频',
-        key: 'video',
+        key: 'mv',
       },
       {
         label: '电台',

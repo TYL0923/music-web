@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-const props = defineProps<{
-  data: Mv
-}>()
+const props = withDefaults(
+  defineProps<{
+    data: Mv
+    rounded?: boolean
+    full?: boolean
+    format?: boolean
+  }>(),
+  {
+    rounded: true,
+    full: false,
+    format: true,
+  },
+)
 const singer = computed(() => {
   if (!props.data.singers)
     return props.data.singer_name
@@ -11,20 +21,21 @@ const singer = computed(() => {
   }, '')
 })
 const num = computed(() => {
-  const y = (props.data.listennum || Number(props.data.listenCount)) / 100000000
-  const w = (props.data.listennum || Number(props.data.listenCount)) / 10000
+  const y = (props.data.listennum || Number(props.data.listenCount) || props.data.playcnt || 0) / 100000000
+  const w = (props.data.listennum || Number(props.data.listenCount) || props.data.playcnt || 0) / 10000
   return y >= 1 ? `${y.toFixed(2)}亿` : `${w.toFixed(2)}万`
 })
 </script>
 
 <template>
-  <div w-50>
+  <div :class="[full ? 'w-full' : 'w-50']">
     <div
       :style="{ backgroundImage: `url('${data.picurl || data.pic}')` }"
-      w-50 h-30 rounded-2
+      w-full
       relative
       bg-cover bg-center bg-norepact
       hover="-translate-y-10px" duration-300
+      :class="[rounded ? 'rounded-2' : '', full ? 'h-40' : 'h-30']"
     >
       <div
         absolute z-1 w-full h-full
@@ -46,7 +57,7 @@ const num = computed(() => {
       </p>
       <span text-sm flex items-center>
         <Icon icon="ph:play" />
-        <span ml-1> {{ num }} </span>
+        <span ml-1> {{ format ? num : data.playcnt?.toLocaleString() || 0 }} </span>
       </span>
     </div>
   </div>

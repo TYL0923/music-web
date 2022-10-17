@@ -22,6 +22,8 @@ declare module '@vue/runtime-core' {
     APopconfirm: typeof import('ant-design-vue/es')['Popconfirm']
     APopover: typeof import('ant-design-vue/es')['Popover']
     AProgress: typeof import('ant-design-vue/es')['Progress']
+    ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
+    ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
     ASelect: typeof import('ant-design-vue/es')['Select']
     ASelectOption: typeof import('ant-design-vue/es')['SelectOption']
     ASubMenu: typeof import('ant-design-vue/es')['SubMenu']

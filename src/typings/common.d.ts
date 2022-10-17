@@ -75,6 +75,7 @@ type Mv = {
   title?: string
   picurl?: string
   pic?: string
+  playcnt?: number
   pub_date?: string
   publictime?: string
   singer_id?: number
