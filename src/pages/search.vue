@@ -31,7 +31,7 @@ const total = ref<number>(0)
 const searchList = ref<{
   'song': Song[]
   'album': Album[]
-  'singer': Singer[]
+  'singer': Song[]
   'mv': Mv[]
 }>({
   song: [],
@@ -64,6 +64,7 @@ async function initSearchList() {
         break
       case '9':
         searchList.value!.singer = data.list
+        console.log(data)
         break
       case '12':
         searchList.value!.mv = data.list
@@ -105,7 +106,7 @@ watchEffect(initSearchList)
             </div>
           </div>
           <template v-if="isLoading">
-            <Skeleton v-for="i in 9" :key="i" type="list" />
+            <Skeleton v-for="i in 2" :key="i" type="list" />
           </template>
           <template v-else>
             <SongListItem
@@ -120,6 +121,28 @@ watchEffect(initSearchList)
           </template>
           <template v-else>
             <AlbumCard v-for="album in searchList.album" :key="album.mid" :data="album" />
+          </template>
+        </div>
+        <div v-if="tab.type === 'singer'">
+          <div text-sm text-gray-500 flex px-2>
+            <div style="width: 40%">
+              歌曲
+            </div>
+            <div style="width: 30%">
+              歌手
+            </div>
+            <div style="width: 30%">
+              专辑
+            </div>
+          </div>
+          <template v-if="isLoading">
+            <Skeleton v-for="i in 9" :key="i" type="list" />
+          </template>
+          <template v-else>
+            <SongListItem
+              v-for="song in searchList!.singer" :key="song.songmid" :data="song"
+              :more-menu-omit="['remove']"
+            />
           </template>
         </div>
       </a-tab-pane>
