@@ -3,6 +3,7 @@ import { Icon } from '@iconify/vue'
 const props = defineProps<{
   data: Song
 }>()
+const { player } = usePlayer()
 const singer = computed(() => {
   return props.data.singer.reduce((pre, cur, idx) => {
     return idx === 0 ? pre + (cur.title || cur.name || '').trim() : `${pre} | ${(cur.title || cur.name || '').trim()}`
@@ -22,6 +23,14 @@ const songImageUrl = computed(() => {
 const time = computed(() => {
   return transfromTime(props.data.interval)
 })
+function handlePlaySong() {
+  player.togglePlaySong({
+    ...props.data,
+    songmid: props.data.mid,
+    songname: props.data.name,
+    mid: props.data.album!.pmid || '',
+  })
+}
 </script>
 
 <template>
@@ -38,7 +47,7 @@ const time = computed(() => {
         duration-300
         opacity-0 hover="opacity-100 cursor-pointer"
       >
-        <span duration-300 text-white hover="text-emerald-500">
+        <span duration-300 text-white hover="text-emerald-500" @click="handlePlaySong">
           <Icon icon="ph:play-fill" width="2rem" />
         </span>
       </div>

@@ -228,6 +228,7 @@ function watchPlaySongChange() {
         if (url) {
           playInstance!.audio.value.autoplay = true
           playInstance!.audio.value.src = url
+          playInstance!.isPause = false
         }
         else {
           // 需要vip

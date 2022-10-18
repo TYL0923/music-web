@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { popoverProps } from 'ant-design-vue/lib/popover'
+import router from '../router'
 const props = withDefaults(defineProps<{
   isTranslate?: boolean
   isShowListenNum?: boolean
@@ -18,6 +20,16 @@ const num = computed(() => {
   const w = props.data.listen_num! / 10000
   return y >= 1 ? `${y.toFixed(0)} 亿` : `${w.toFixed(0)} 万`
 })
+function handleGotoSongList() {
+  if (props.data.content_id) {
+    router.push({
+      path: 'songlist',
+      query: {
+        id: props.data.content_id,
+      },
+    })
+  }
+}
 </script>
 
 <template>
@@ -49,7 +61,7 @@ const num = computed(() => {
         hover="opacity-100 bg-opacity-50"
         flex items-center justify-center
       >
-        <span duration-300 text-white hover="text-emerald-500" @click="emits('play', data.content_id)">
+        <span duration-300 text-white hover="text-emerald-500" @click="handleGotoSongList">
           <Icon icon="ph:play-fill" width="3rem" />
         </span>
       </div>

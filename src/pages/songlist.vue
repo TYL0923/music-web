@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { message } from 'ant-design-vue'
-import { addSongByMid, removeSongById } from '../api/songListApi'
+import { removeSongById } from '../api/songListApi'
 const route = useRoute()
 const songListDetail = ref<SongList>()
 const { player } = usePlayer()
