@@ -64,7 +64,6 @@ async function initSearchList() {
         break
       case '9':
         searchList.value!.singer = data.list
-        console.log(data)
         break
       case '12':
         searchList.value!.mv = data.list
